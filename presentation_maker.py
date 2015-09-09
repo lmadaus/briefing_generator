@@ -136,7 +136,7 @@ def get_latest_image(product, present_date, within_hours=12):
         fdate = None
         recent_file = path.split('/')[-1]
         if os.path.exists(recent_file):
-            os.system('rm -f {:s}'.format(recent_file)
+            os.system('rm -f {:s}'.format(recent_file))
             
         try:    
             urllib.request.urlretrieve(path, recent_file)
@@ -151,7 +151,7 @@ def get_latest_image(product, present_date, within_hours=12):
             path = '.'.join(pathsplit)
         else:
             fdate=None
-        print(path)
+        #print(path)
         if os.path.exists(ext):
             os.system('rm -f {:s}'.format(ext))
                 #print(path)
