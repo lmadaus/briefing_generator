@@ -125,7 +125,10 @@ def get_latest_image(product, present_date, within_hours=12):
             
         path = path + '/{:%Y%m%d%H}_{:03d}.gif'.format(fdate,fhour)
         #print(path)
-        urllib.request.urlretrieve(path, recent_file)
+        try:
+            urllib.request.urlretrieve(path, recent_file)
+        except AttributeError:
+            urllib.urlretrieve(path, recent_file)
         fdate = None
     
     elif ext is None:
@@ -133,8 +136,12 @@ def get_latest_image(product, present_date, within_hours=12):
         fdate = None
         recent_file = path.split('/')[-1]
         if os.path.exists(recent_file):
-            os.system('rm -f {:s}'.format(recent_file))
-        urllib.request.urlretrieve(path, recent_file)
+            os.system('rm -f {:s}'.format(recent_file)
+            
+        try:    
+            urllib.request.urlretrieve(path, recent_file)
+        except AttributeError:
+            urllib.urlretrieve(path, recent_file)
     else:
         if 'WRF' in product:
             fhour = int(path.split('.')[-2][1:])
@@ -148,7 +155,11 @@ def get_latest_image(product, present_date, within_hours=12):
         if os.path.exists(ext):
             os.system('rm -f {:s}'.format(ext))
                 #print(path)
-        urllib.request.urlretrieve(path, ext)
+        try:
+            urllib.request.urlretrieve(path, ext)
+        except AttributeError:
+            urllib.urlretrieve(path, ext)
+            
         recent_file = ext
             
     path = ''
