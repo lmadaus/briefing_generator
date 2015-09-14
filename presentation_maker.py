@@ -26,7 +26,7 @@ presentation_path = '.'
 # Set the path to the model images
 model_path='http://www.atmos.washington.edu/~lmadaus/olympex/index.php?init={:%Y%m%d%H}&product={:s}'
 
-
+# Different default possibilities for the slide layout
 layout = {'Title Slide' : 0,
           'Bullet Slide' : 1,
           'Segue' : 2,
@@ -93,265 +93,6 @@ img_paths = {
              'NAEFS 500mb and Spread Day 5' : ('http://collaboration.cmc.ec.gc.ca/cmc/ensemble/cartes/data/cartes/GZ500/CMC_NCEP','naefs_500mb_day5.gif'),
 
             }
-
-
-
-def get_latest_image(product, present_date, within_hours=12):
-    """
-    Function to get the latest image from a given product,
-    but only if it is within within_hours of present_date
-    
-    Returns a tuple with:
-    
-    (string that is the full address of the image,
-    date the image is valid (datetime object))
-    
-    The product name MUST HAVE an entry in the img_paths dictionary,
-    otherwise None is returned
-    """
-    gfs_hours = {3:60,
-                 4:84,
-                 5:108}
-    naefs_hours = {3:72,
-                   4:96,
-                   5:120}
-    
-    if product not in img_paths.keys():
-        print("Unable to find path to product:", product)
-        return None
-    # Parse out the info
-    path, ext = img_paths[product]
-    # If this is a path, replace the starttime with the desired time
-    # Given as present date (this MUST be a model start time)
-    path = path.replace('YYYYMMDDHH',present_date.strftime('%Y%m%d%H'))    
-    
-    # This is a web address
-    if product in ['GFS 500mb Day 3', 'NAEFS 500mb and Spread Day 3','NAEFS 500mb and Spread Day 4',\
-                'NAEFS 500mb and Spread Day 5']:
-        recent_file = ext
-        if os.path.exists(recent_file):
-            os.system('rm -f {:s}'.format(recent_file))
-            
-        # Replace the DDDD in the path with the current date
-        
-        if product.startswith('GFS'):
-            fhour = gfs_hours[int(product[-1])]
-            fdate = present_date.replace(hour=12)
-        elif product.startswith('NAEFS'):
-            fhour = naefs_hours[int(product[-1])]
-            fdate = present_date.replace(hour=0)
-            
-        path = path + '/{:%Y%m%d%H}_{:03d}.gif'.format(fdate,fhour)
-        #print(path)
-        try:
-            urllib.request.urlretrieve(path, recent_file)
-        except AttributeError:
-            urllib.urlretrieve(path, recent_file)
-        fdate = None
-    
-    elif ext is None:
-        # Just download directly from the path
-        fdate = None
-        recent_file = path.split('/')[-1]
-        if os.path.exists(recent_file):
-            os.system('rm -f {:s}'.format(recent_file))
-            
-        try:    
-            urllib.request.urlretrieve(path, recent_file)
-        except AttributeError:
-            urllib.urlretrieve(path, recent_file)
-    else:
-        if 'WRF' in product:
-            fhour = int(path.split('.')[-2][1:])
-            fdate = present_date + timedelta(hours=fhour)
-            pathsplit = path.split('.')
-            pathsplit[-3] = fdate.strftime('%Y%m%d%H')
-            path = '.'.join(pathsplit)
-        else:
-            fdate=None
-        #print(path)
-        if os.path.exists(ext):
-            os.system('rm -f {:s}'.format(ext))
-                #print(path)
-        try:
-            urllib.request.urlretrieve(path, ext)
-        except AttributeError:
-            urllib.urlretrieve(path, ext)
-        #except:
-        #   print("FILE NOT FOUND:")
-        #   print(path)
-        #   exit(1)
-            
-        recent_file = ext
-            
-    path = ''
-
-
-        
-
-    # Now check if the file is close in time to presentation date
-    """
-    if fdate is not None:
-        tdiff = present_date - fdate
-        nhours = tdiff.days * 24 + tdiff.seconds/3600.
-        if abs(nhours) > within_hours:
-            print("{:s} most recent time is {:%H%MZ %d %b %Y}, skipping".format(product, fdate))
-            return None
-        print("Found {:s} image valid at {:%H%MZ %d %b %Y}".format(product, fdate))
-    else:
-    """
-    print("Found {:s} image".format(product))
-    # Return the path
-    if path == '':
-        return (recent_file, fdate)
-    else:
-        return ('/'.join((path,recent_file)), fdate)
-
-
-
-
-def make_timeline_image(modeld, start_time, end_time, center_loc='NPOL'):
-    """
-    Function to make a timeline image for frontal passage
-    start_time and end_time and datetime objects for when the 
-    timeline should begin and end
-    
-    The modeld is a dictionary of dictionaries for the times when
-    each model is in various regimes
-    """
-    import matplotlib
-    from matplotlib.dates import date2num
-    import matplotlib.pyplot as plt
-    nmodels = len(modeld.keys())
-    
-    start_num = date2num(start_time)
-    end_num = date2num(end_time)
-    
-    
-    plt.figure()
-    # Need subplots for each model
-    for modnum, mod in enumerate(modeld.keys()):
-        ax = plt.subplot(nmodels,1,modnum+1)
-        ax.set_frame_on(False)
-        moddat = modeld[mod]
-        prefront = date2num(moddat['Pre-frontal'])
-        front = date2num(moddat['Frontal'])    
-        postfront = date2num(moddat['Post-frontal'])
-        end = date2num(moddat['End'])
-        # now plot
-        pre = ax.barh(0.1,abs(front-prefront),height=0.8,left=prefront,color='green', label='Pre-frontal')
-        front = ax.barh(0.1,abs(postfront-front),height=0.8,left=front,color='red', label='Frontal Zone')
-        post = ax.barh(0.1,abs(end-postfront),height=0.8,left=postfront,color='blue', label='Post-frontal')
-        ax.text(0.0,0.5,mod,ha='center',va='center',transform=ax.transAxes,fontsize=18)
-        ax.set_xlim((start_num,end_num))
-        if modnum in [nmodels-1,0]:
-            # Format the x-axis labels as dates
-            ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%HZ'))
-            if modnum == 0:
-                ax.xaxis.tick_top()
-            else:
-                ax.legend(handles=[pre,front,post], ncol=3, bbox_to_anchor=(0.,-0.40,1.0,0.1),loc=8, mode='expand', borderaxespad=0.)
-        else:
-            ax.set_xticklabels([])
-        ax.set_yticks([])
-        ax.set_ylim((0,1))
-    plt.show()
-
-
-
-modeld = {
-        'GFS' : {'Pre-frontal' : datetime(2015,7,28,14),
-                   'Frontal'    : datetime(2015,7,28,18),
-                   'Post-frontal' : datetime(2015,7,28,20),
-                   'End'          : datetime(2015,7,28,22)},
-        'ECMWF' : {'Pre-frontal' : datetime(2015,7,28,13,30),
-                   'Frontal'    : datetime(2015,7,28,17),
-                   'Post-frontal' : datetime(2015,7,28,19),
-                   'End'          : datetime(2015,7,28,23)},         
-        'NAM' : {'Pre-frontal' : datetime(2015,7,28,13),
-                   'Frontal'    : datetime(2015,7,28,17),
-                   'Post-frontal' : datetime(2015,7,28,18),
-                   'End'          : datetime(2015,7,28,21)}, 
-        'WRF' : {'Pre-frontal' : datetime(2015,7,28,14,30),
-                   'Frontal'    : datetime(2015,7,28,18,30),
-                   'Post-frontal' : datetime(2015,7,28,19),
-                   'End'          : datetime(2015,7,28,22)},         
-         
-         }
-
-
-#make_timeline_image(modeld, datetime(2015,7,28,12), datetime(2015,7,29,0))
-
-
-
-def full_slide_image(prs,product,present_date, ftime=None, width=None, link=False):
-    # Take "product" and make a full-slide image with title out of it
-    # Grab the latest image
-    imgpath, imgdate = get_latest_image(product, present_date)
-    #imgpath = product
-   
-    # Get a blank slide layout and add it to the presentation
-    slide_layout = prs.slide_layouts[layout['Title Alone']]
-    slide = prs.slides.add_slide(slide_layout)
-    title = slide.shapes.title
-    if width is not None:
-        title.top=Inches(7.1)
-        title.left = Inches(0)
-        title.width=Inches(10)
-    else:
-        title.top=Inches(3)
-        title.left = Inches(7.5)
-        title.width=Inches(2.0)
-    p = title.text_frame.paragraphs[0]
-    r = p.add_run()
-    r.text = product
-    r.font.size=Pt(40)
-    if link:
-        hlink = r.hyperlink
-        hlink.address = link
-    if ftime is not None:
-        d = p.add_run()
-        d.text = '\n\n' + ftime.strftime('%d %b %HZ')
-        d.font.size=Pt(28)
-
-    # Add the image
-    if width is not None:
-        left_balanced = (10-width)/2.
-        pic = slide.shapes.add_picture(imgpath, left=Inches(left_balanced), top=Inches(0.1), width=Inches(width))
-    else:
-        pic = slide.shapes.add_picture(imgpath, left=Inches(0), top=Inches(0.0), width=Inches(7))
-    return prs
-
-
-
-def bumper_slide(prs, title, date):
-    # Choose a blank
-    slide_layout = prs.slide_layouts[layout['Segue']]
-    # Add the slide to the presentation
-    slide = prs.slides.add_slide(slide_layout)
-    # Change the title
-    slide.shapes.title.text = title
-    # Subtitle is date
-    slide.placeholders[1].text = "{:%d %b %Y}".format(date)
-    return prs
-
-
-
-def objectives_slide(prs, title):
-    # Choose a blank
-    slide_layout = prs.slide_layouts[layout['Side By Side']]
-    # Add the slide to the presentation
-    slide = prs.slides.add_slide(slide_layout)
-    slide.shapes.title.text = title 
-    
-    return prs
-
-def full_summary(prs, title):
-    slide_layout = prs.slide_layouts[layout['Bullet Slide']]
-    slide = prs.slides.add_slide(slide_layout)
-    slide.shapes.title.text = title
-    return prs
-
 
 def build_presentation(present_date):
     """
@@ -550,33 +291,193 @@ def build_presentation(present_date):
     # Save the presentation
     prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(present_date))
 
-modeld = {
-        'GFS' : {'Pre-frontal' : datetime(2015,7,28,14),
-                   'Frontal'    : datetime(2015,7,28,18),
-                   'Post-frontal' : datetime(2015,7,28,20),
-                   'End'          : datetime(2015,7,28,22)},
-        'ECMWF' : {'Pre-frontal' : datetime(2015,7,28,13,30),
-                   'Frontal'    : datetime(2015,7,28,17),
-                   'Post-frontal' : datetime(2015,7,28,19),
-                   'End'          : datetime(2015,7,28,23)},         
-        'NAM' : {'Pre-frontal' : datetime(2015,7,28,13),
-                   'Frontal'    : datetime(2015,7,28,17),
-                   'Post-frontal' : datetime(2015,7,28,18),
-                   'End'          : datetime(2015,7,28,21)}, 
-        'WRF' : {'Pre-frontal' : datetime(2015,7,28,14,30),
-                   'Frontal'    : datetime(2015,7,28,18,30),
-                   'Post-frontal' : datetime(2015,7,28,19),
-                   'End'          : datetime(2015,7,28,22)},         
-         
-         }
+def get_latest_image(product, present_date, within_hours=12):
+    """
+    Function to get the latest image from a given product,
+    but only if it is within within_hours of present_date
+    
+    Returns a tuple with:
+    
+    (string that is the full address of the image,
+    date the image is valid (datetime object))
+    
+    The product name MUST HAVE an entry in the img_paths dictionary,
+    otherwise None is returned
+    """
+    gfs_hours = {3:60,
+                 4:84,
+                 5:108}
+    naefs_hours = {3:72,
+                   4:96,
+                   5:120}
+    
+    if product not in img_paths.keys():
+        print("Unable to find path to product:", product)
+        return None
+    # Parse out the info
+    path, ext = img_paths[product]
+    # If this is a path, replace the starttime with the desired time
+    # Given as present date (this MUST be a model start time)
+    path = path.replace('YYYYMMDDHH',present_date.strftime('%Y%m%d%H'))    
+    
+    # This is a web address
+    if product in ['GFS 500mb Day 3', 'NAEFS 500mb and Spread Day 3','NAEFS 500mb and Spread Day 4',\
+                'NAEFS 500mb and Spread Day 5']:
+        recent_file = ext
+        if os.path.exists(recent_file):
+            os.system('rm -f {:s}'.format(recent_file))
+            
+        # Replace the DDDD in the path with the current date
+        
+        if product.startswith('GFS'):
+            fhour = gfs_hours[int(product[-1])]
+            fdate = present_date.replace(hour=12)
+        elif product.startswith('NAEFS'):
+            fhour = naefs_hours[int(product[-1])]
+            fdate = present_date.replace(hour=0)
+            
+        path = path + '/{:%Y%m%d%H}_{:03d}.gif'.format(fdate,fhour)
+        #print(path)
+        try:
+            urllib.request.urlretrieve(path, recent_file)
+        except AttributeError:
+            urllib.urlretrieve(path, recent_file)
+        fdate = None
+    
+    elif ext is None:
+        # Just download directly from the path
+        fdate = None
+        recent_file = path.split('/')[-1]
+        if os.path.exists(recent_file):
+            os.system('rm -f {:s}'.format(recent_file))
+            
+        try:    
+            urllib.request.urlretrieve(path, recent_file)
+        except AttributeError:
+            urllib.urlretrieve(path, recent_file)
+    else:
+        if 'WRF' in product:
+            fhour = int(path.split('.')[-2][1:])
+            fdate = present_date + timedelta(hours=fhour)
+            pathsplit = path.split('.')
+            pathsplit[-3] = fdate.strftime('%Y%m%d%H')
+            path = '.'.join(pathsplit)
+        else:
+            fdate=None
+        #print(path)
+        if os.path.exists(ext):
+            os.system('rm -f {:s}'.format(ext))
+                #print(path)
+        try:
+            urllib.request.urlretrieve(path, ext)
+        except AttributeError:
+            urllib.urlretrieve(path, ext)
+        #except:
+        #   print("FILE NOT FOUND:")
+        #   print(path)
+        #   exit(1)
+            
+        recent_file = ext
+            
+    path = ''
 
-#make_timeline_image(modeld, datetime(2015,7,28,12), datetime(2015,7,29,0))
+
+        
+
+    # Now check if the file is close in time to presentation date
+    """
+    if fdate is not None:
+        tdiff = present_date - fdate
+        nhours = tdiff.days * 24 + tdiff.seconds/3600.
+        if abs(nhours) > within_hours:
+            print("{:s} most recent time is {:%H%MZ %d %b %Y}, skipping".format(product, fdate))
+            return None
+        print("Found {:s} image valid at {:%H%MZ %d %b %Y}".format(product, fdate))
+    else:
+    """
+    print("Found {:s} image".format(product))
+    # Return the path
+    if path == '':
+        return (recent_file, fdate)
+    else:
+        return ('/'.join((path,recent_file)), fdate)
 
 
-#present_date.replace(hour=12)
-#present_date.replace(minute=0)
-#present_date = datetime(2015,9,9,12)
-build_presentation(present_date)
+
+
+def full_slide_image(prs,product,present_date, ftime=None, width=None, link=False):
+    # Take "product" and make a full-slide image with title out of it
+    # Grab the latest image
+    imgpath, imgdate = get_latest_image(product, present_date)
+    #imgpath = product
+   
+    # Get a blank slide layout and add it to the presentation
+    slide_layout = prs.slide_layouts[layout['Title Alone']]
+    slide = prs.slides.add_slide(slide_layout)
+    title = slide.shapes.title
+    if width is not None:
+        title.top=Inches(7.1)
+        title.left = Inches(0)
+        title.width=Inches(10)
+    else:
+        title.top=Inches(3)
+        title.left = Inches(7.5)
+        title.width=Inches(2.0)
+    p = title.text_frame.paragraphs[0]
+    r = p.add_run()
+    r.text = product
+    r.font.size=Pt(40)
+    if link:
+        hlink = r.hyperlink
+        hlink.address = link
+    if ftime is not None:
+        d = p.add_run()
+        d.text = '\n\n' + ftime.strftime('%d %b %HZ')
+        d.font.size=Pt(28)
+
+    # Add the image
+    if width is not None:
+        left_balanced = (10-width)/2.
+        pic = slide.shapes.add_picture(imgpath, left=Inches(left_balanced), top=Inches(0.1), width=Inches(width))
+    else:
+        pic = slide.shapes.add_picture(imgpath, left=Inches(0), top=Inches(0.0), width=Inches(7))
+    return prs
+
+
+
+def bumper_slide(prs, title, date):
+    # Choose a blank
+    slide_layout = prs.slide_layouts[layout['Segue']]
+    # Add the slide to the presentation
+    slide = prs.slides.add_slide(slide_layout)
+    # Change the title
+    slide.shapes.title.text = title
+    # Subtitle is date
+    slide.placeholders[1].text = "{:%d %b %Y}".format(date)
+    return prs
+
+
+
+def objectives_slide(prs, title):
+    # Choose a blank
+    slide_layout = prs.slide_layouts[layout['Side By Side']]
+    # Add the slide to the presentation
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = title 
+    
+    return prs
+
+def full_summary(prs, title):
+    slide_layout = prs.slide_layouts[layout['Bullet Slide']]
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = title
+    return prs
+
+
+
+
+if __name__ == '__main__':
+    build_presentation(present_date)
 
 
 
