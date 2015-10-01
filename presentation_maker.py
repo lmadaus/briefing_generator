@@ -102,7 +102,9 @@ def build_presentation(present_date):
          (i.e., the initialization date for the model graphics to grab)
     """
     # Switch to the presentation directory
+    basedir = os.getcwd()
     os.chdir(presentation_path)
+    
     # Make a new subdirectory for this presentation
     if os.path.exists('./{:%Y%m%d%H}'.format(present_date)):
         os.system('rm ./{:%Y%m%d%H}/*'.format(present_date))
@@ -111,8 +113,11 @@ def build_presentation(present_date):
     os.chdir('./{:%Y%m%d%H}'.format(present_date))
 
     # Make a new presentation
+    #try:
+    #prs = Presentation(os.path.join(basedir,'default.pptx'))
+    #except:
     prs = Presentation()
-
+    
     # Make the title slide
     # Choose a title slide layout
     title_slide_layout = prs.slide_layouts[layout['Title Slide']]
@@ -342,6 +347,7 @@ def get_latest_image(product, present_date, within_hours=12):
             urllib.request.urlretrieve(path, recent_file)
         except AttributeError:
             urllib.urlretrieve(path, recent_file)
+            
         fdate = None
     
     elif ext is None:
