@@ -24,7 +24,7 @@ present_date = datetime.combine(nowdate,dtime(12,0))
 # Set the directory where the output files will be put
 presentation_path = '.'
 # Set the path to the model images
-model_path='http://www.atmos.washington.edu/~lmadaus/olympex/index.php?init={:%Y%m%d%H}&product={:s}'
+model_path='http://www.atmos.washington.edu/~lmadaus/olympex/index.php?init={:%Y%m%d%H}&product={:s}&start={:d}'
 
 # Different default possibilities for the slide layout
 layout = {'Title Slide' : 0,
@@ -150,6 +150,9 @@ def build_presentation(present_date):
     prs = full_slide_image(prs, 'Water Vapor', present_date, width=9, link='http://www.atmos.washington.edu/~ovens/wxloop.cgi?wv_common+/48h/')
     # Here for the web-based OPC surface analysis
     prs = full_slide_image(prs, 'OPC Surface Analys.', present_date, link=False)
+
+    # Model verification?    
+
     
     # Regional Radar
     prs = full_slide_image(prs, 'NWS PacNW Radar', present_date, link='http://www.atmos.washington.edu/~lmadaus/olympex/index.php?product=radar')
@@ -157,7 +160,8 @@ def build_presentation(present_date):
     prs = full_slide_image(prs, 'KUIL Latest Sound.', present_date)
     
     # Current airport conditions--> vis, wind dir, wind speed (and at NPOL)
-    prs = full_summary(prs, 'Current Airport Conditions')
+    #prs = full_summary(prs, 'Current Airport Conditions')
+    prs = airport_slide(prs, 'Current Airport Conditions')
     
     # Bumper into next 24 hour forecast
     prs = bumper_slide(prs, 'Forecast: Day 0', present_date)
@@ -166,31 +170,31 @@ def build_presentation(present_date):
     
    
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_500mb'))
+    prs = full_slide_image(prs, 'WRF 500mb Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_500mb',1))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_surface'))
+    prs = full_slide_image(prs, 'WRF SLP Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_surface',1))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_melt_level'))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_melt_level',1))
     
     # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 0', present_date, day0_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr'))   
+    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 0', present_date, day0_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr',1))   
     
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 0', present_date, day0_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr'))    
+    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 0', present_date, day0_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr',1))    
 
     # WRF 3hr precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_precip03hr'))   
+    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_precip03hr',1))   
     
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_precip03hr')) 
+    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_precip03hr',1)) 
    
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_wssfc'))
+    prs = full_slide_image(prs, 'WRF 10m Wind Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_wssfc',1))
     
     # WRF zoom 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_wssfc'))
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_wssfc',1))
  
     # GPM Overpasses
     prs = full_summary(prs, 'GPM Overpasses')
@@ -204,31 +208,31 @@ def build_presentation(present_date):
     #day2_ftime = day2_ftime.replace(hour=0, minute=0, second=0)
       
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_500mb'))
+    prs = full_slide_image(prs, 'WRF 500mb Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_500mb',9))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_surface'))
+    prs = full_slide_image(prs, 'WRF SLP Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_surface',9))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_melt_level'))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_melt_level',25))
     
     # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 1', present_date, day1_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr'))    
+    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 1', present_date, day1_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr',9))    
 
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', present_date, day1_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr')) 
+    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', present_date, day1_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr',25)) 
 
     # WRF 3hr Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_precip03hr'))    
+    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_precip03hr',9))    
 
     # WRF 3hr zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip03hr')) 
+    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip03hr',25)) 
     
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_wssfc'))    
+    prs = full_slide_image(prs, 'WRF 10m Wind Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_wssfc',9))    
 
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc'))  
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc',25))  
 
     # GPM Overpasses
     prs = full_summary(prs, 'GPM Overpasses')
@@ -241,31 +245,31 @@ def build_presentation(present_date):
     day2_ftime = present_date + timedelta(hours=60)
 
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_500mb'))
+    prs = full_slide_image(prs, 'WRF 500mb Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_500mb',17))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_surface'))
+    prs = full_slide_image(prs, 'WRF SLP Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_surface',17))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_melt_level'))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_melt_level',49))
     
     # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', present_date, day2_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr'))    
+    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', present_date, day2_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr',17))    
 
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', present_date, day2_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr')) 
+    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', present_date, day2_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr',49)) 
     
     # WRF 3hr Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_precip03hr'))    
+    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_precip03hr',17))    
 
     # WRF 3hr zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip03hr'))     
+    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip03hr',49))     
     
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_wssfc'))    
+    prs = full_slide_image(prs, 'WRF 10m Wind Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_wssfc',17))    
 
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_wssfc'))  
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_wssfc',49))  
 
     # GPM Overpasses
     prs = full_summary(prs, 'GPM Overpasses')
@@ -414,7 +418,9 @@ def get_latest_image(product, present_date, within_hours=12):
 def full_slide_image(prs,product,present_date, ftime=None, width=None, link=False):
     # Take "product" and make a full-slide image with title out of it
     # Grab the latest image
-    imgpath, imgdate = get_latest_image(product, present_date)
+    results = get_latest_image(product, present_date)
+    
+ 
     #imgpath = product
    
     # Get a blank slide layout and add it to the presentation
@@ -441,6 +447,10 @@ def full_slide_image(prs,product,present_date, ftime=None, width=None, link=Fals
         d.text = '\n\n' + ftime.strftime('%d %b %HZ')
         d.font.size=Pt(28)
 
+    if results is None:
+        # Didn't find the image.  Create slide anyway.
+        return prs
+    imgpath, imgdate = results   
     # Add the image
     if width is not None:
         left_balanced = (10-width)/2.
@@ -479,7 +489,31 @@ def full_summary(prs, title):
     slide.shapes.title.text = title
     return prs
 
+def airport_slide(prs, title):
+    slide_layout = prs.slide_layouts[layout['Bullet Slide']]
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = title
+    # Get main text box
+    mainbox = slide.placeholders[1]
+    tf = mainbox.text_frame
+    tf.clear()
+    # New paragraph for each station
+    stations = ['Paine Field [KPAE]','McChord Field [KTCM]','Hoquiam [KHQM]']
+    for s in stations:
+        p = tf.add_paragraph()
+        run = p.add_run()
+        run.text = s + '\n'
+        run = p.add_run()
+        run.text = '\tWind:\n'
+        run = p.add_run()
+        run.text = '\tCeiling:\n'
+        run = p.add_run()
+        run.text = '\tVisibility:'
+    tf.margin_bottom=Inches(0.1)
+    tf.word_wrap = False
 
+    
+    return prs    
 
 
 if __name__ == '__main__':
