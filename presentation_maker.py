@@ -45,39 +45,39 @@ img_paths = {
              'IR+500mb' : ('http://www.atmos.washington.edu/cgi-bin/latest.cgi?sat_500+-notitle','500mb.gif',),
              'Water Vapor' : ('http://www.atmos.washington.edu/cgi-bin/latest.cgi?wv_common_full+-notitle','wv.gif'),
              'OPC Surface Analys.' : ('http://www.opc.ncep.noaa.gov/P_e_sfc_color.png',None),
-             'WRF 500mb Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f012.png', 'wrf_500mb_day0.png'),
-             'WRF 500mb Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f036.png', 'wrf_500mb_day1.png'),
-             'WRF 500mb Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f060.png', 'wrf_500mb_day2.png'),
-             'WRF SLP Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f012.png', 'wrf_sfc_day0.png'),
-             'WRF SLP Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f036.png', 'wrf_sfc_day1.png'),
-             'WRF SLP Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f060.png', 'wrf_sfc_day2.png'),
+             'WRF 500mb Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f006.png', 'wrf_500mb_day0.png'),
+             'WRF 500mb Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f024.png', 'wrf_500mb_day1.png'),
+             'WRF 500mb Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f048.png', 'wrf_500mb_day2.png'),
+             'WRF SLP Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f006.png', 'wrf_sfc_day0.png'),
+             'WRF SLP Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f024.png', 'wrf_sfc_day1.png'),
+             'WRF SLP Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f048.png', 'wrf_sfc_day2.png'),
 
-             'WRF Melt. Level Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f012.png', 'wrf_melt_level_day0.png'),
-             'WRF Melt. Level Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f036.png', 'wrf_melt_level_day1.png'),     
-             'WRF Melt. Level Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f060.png', 'wrf_melt_level_day2.png'),     
+             'WRF Melt. Level Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f006.png', 'wrf_melt_level_day0.png'),
+             'WRF Melt. Level Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f024.png', 'wrf_melt_level_day1.png'),     
+             'WRF Melt. Level Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f048.png', 'wrf_melt_level_day2.png'),     
 
-             'WRF 12hr Prcp Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip12hr.YYYYMMDDHH.f024.png', 'wrf_precip_large_day0.png'),
-             'WRF 12hr Prcp (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip12hr.YYYYMMDDHH.f024.png', 'wrf_precip_small_day0.png'),
-             'WRF 12hr Prcp Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip12hr.YYYYMMDDHH.f048.png', 'wrf_precip_large_day1.png'),
-             'WRF 12hr Prcp (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip12hr.YYYYMMDDHH.f048.png', 'wrf_precip_small_day1.png'),
-             'WRF 12hr Prcp Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip12hr.YYYYMMDDHH.f072.png', 'wrf_precip_large_day2.png'),
-             'WRF 12hr Prcp (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip12hr.YYYYMMDDHH.f072.png', 'wrf_precip_small_day2.png'),
+             'WRF 12hr Prcp Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip12hr.YYYYMMDDHH.f012.png', 'wrf_precip_large_day0.png'),
+             'WRF 12hr Prcp (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip12hr.YYYYMMDDHH.f012.png', 'wrf_precip_small_day0.png'),
+             'WRF 12hr Prcp Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip12hr.YYYYMMDDHH.f024.png', 'wrf_precip_large_day1.png'),
+             'WRF 12hr Prcp (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip12hr.YYYYMMDDHH.f024.png', 'wrf_precip_small_day1.png'),
+             'WRF 12hr Prcp Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip12hr.YYYYMMDDHH.f048.png', 'wrf_precip_large_day2.png'),
+             'WRF 12hr Prcp (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip12hr.YYYYMMDDHH.f048.png', 'wrf_precip_small_day2.png'),
 
 
              'WRF 3hr Prcp Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f012.png', 'wrf_precip03_large_day0.png'),
              'WRF 3hr Prcp (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f012.png', 'wrf_precip03_small_day0.png'),
-             'WRF 3hr Prcp Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f036.png', 'wrf_precip03_large_day1.png'),
-             'WRF 3hr Prcp (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f036.png', 'wrf_precip03_small_day1.png'),
-             'WRF 3hr Prcp Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f060.png', 'wrf_precip03_large_day2.png'),
-             'WRF 3hr Prcp (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f060.png', 'wrf_precip03_small_day2.png'),
+             'WRF 3hr Prcp Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f024.png', 'wrf_precip03_large_day1.png'),
+             'WRF 3hr Prcp (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f024.png', 'wrf_precip03_small_day1.png'),
+             'WRF 3hr Prcp Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f048.png', 'wrf_precip03_large_day2.png'),
+             'WRF 3hr Prcp (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f048.png', 'wrf_precip03_small_day2.png'),
 
 
-             'WRF 10m Wind Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f012.png', 'wrf_wssfc_large_day0.png'),
-             'WRF 10m Wind (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f012.png', 'wrf_wssfc_small_day0.png'),
-             'WRF 10m Wind Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f036.png', 'wrf_wssfc_large_day1.png'),
-             'WRF 10m Wind (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f036.png', 'wrf_wssfc_small_day1.png'),
-             'WRF 10m Wind Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f060.png', 'wrf_wssfc_large_day2.png'),
-             'WRF 10m Wind (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f060.png', 'wrf_wssfc_small_day2.png'),             
+             'WRF 10m Wind Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f006.png', 'wrf_wssfc_large_day0.png'),
+             'WRF 10m Wind (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f006.png', 'wrf_wssfc_small_day0.png'),
+             'WRF 10m Wind Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f024.png', 'wrf_wssfc_large_day1.png'),
+             'WRF 10m Wind (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f024.png', 'wrf_wssfc_small_day1.png'),
+             'WRF 10m Wind Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f048.png', 'wrf_wssfc_large_day2.png'),
+             'WRF 10m Wind (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f048.png', 'wrf_wssfc_small_day2.png'),             
              
              'NWS PacNW Radar' : ('http://www.atmos.washington.edu/~lmadaus/olympex/radar/YYYYMMDDHH00_bref.png','radar.png'),    
              'KUIL Latest Sound.' : ('http://www.atmos.washington.edu/~lmadaus/olympex/soundings/KUIL_YYYYMMDDHH_snd.png','sounding.png'),
@@ -137,8 +137,7 @@ def build_presentation(present_date):
     prs = bumper_slide(prs, 'Past 24 hours', present_date-timedelta(days=1))
     # Blank slide here
     prs = full_summary(prs, 'Summary of Prev. 24 Hours')
-    # Blank slide here
-    prs = full_summary(prs, 'Flight Path and Objectives')
+
 
 
     # Make current weather bumper
@@ -165,7 +164,7 @@ def build_presentation(present_date):
     
     # Bumper into next 24 hour forecast
     prs = bumper_slide(prs, 'Forecast: Day 0', present_date)
-    day0_ftime = present_date + timedelta(hours=12)
+    day0_ftime = present_date + timedelta(hours=6)
     #day1_ftime = day1_ftime.replace(hour=0, minute=0, second=0)
     
    
@@ -177,22 +176,10 @@ def build_presentation(present_date):
     
     # WRF Melting level
     prs = full_slide_image(prs, 'WRF Melt. Level Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_melt_level',1))
-    
-    # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 0', present_date, day0_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr',1))   
-    
+       
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 0', present_date, day0_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr',1))    
-
-    # WRF 3hr precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_precip03hr',1))   
-    
-    # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_precip03hr',1)) 
-   
-    # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_wssfc',1))
-    
+    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 0', present_date, day0_ftime+timedelta(hours=6), link=model_path.format(present_date,'opxSM_precip3hr',1)) 
+      
     # WRF zoom 10m Winds
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_wssfc',1))
  
@@ -203,36 +190,28 @@ def build_presentation(present_date):
     prs = objectives_slide(prs, 'Day 0 Summary')    
     
     # Bumper into day 1 forecast
-    prs = bumper_slide(prs, 'Forecast: Day 1', present_date + timedelta(days=1))
-    day1_ftime = present_date + timedelta(hours=36)
+    prs = bumper_slide(prs, 'Forecast: Day 1', present_date + timedelta(hours=12))
+    day1_ftime = present_date + timedelta(hours=24)
     #day2_ftime = day2_ftime.replace(hour=0, minute=0, second=0)
       
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_500mb',9))
+    prs = full_slide_image(prs, 'WRF 500mb Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_500mb',5))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_surface',9))
+    prs = full_slide_image(prs, 'WRF SLP Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_surface',5))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_melt_level',25))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_melt_level',13))
     
-    # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 1', present_date, day1_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr',9))    
-
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', present_date, day1_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr',25)) 
+    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip12hr',13)) 
 
-    # WRF 3hr Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_precip03hr',9))    
-
+  
     # WRF 3hr zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip03hr',25)) 
+    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip3hr',13)) 
     
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_wssfc',9))    
-
-    # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc',25))  
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc',13))  
 
     # GPM Overpasses
     prs = full_summary(prs, 'GPM Overpasses')
@@ -241,35 +220,29 @@ def build_presentation(present_date):
     prs = objectives_slide(prs, 'Day 1 Summary')
 
     # Bumper into day 2 forecast
-    prs = bumper_slide(prs, 'Forecast: Day 2', present_date + timedelta(days=2))
-    day2_ftime = present_date + timedelta(hours=60)
+    prs = bumper_slide(prs, 'Forecast: Day 2', present_date + timedelta(hours=36))
+    day2_ftime = present_date + timedelta(hours=48)
 
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_500mb',17))
+    prs = full_slide_image(prs, 'WRF 500mb Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_500mb',13))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_surface',17))
+    prs = full_slide_image(prs, 'WRF SLP Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_surface',13))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_melt_level',49))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_melt_level',37))
     
     # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', present_date, day2_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxLG_precip12hr',17))    
+    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_precip12hr',13))    
 
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', present_date, day2_ftime+timedelta(hours=12), link=model_path.format(present_date,'opxSM_precip12hr',49)) 
+    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip12hr',37)) 
     
-    # WRF 3hr Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_precip03hr',17))    
-
     # WRF 3hr zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip03hr',49))     
+    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip3hr',37))     
     
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_wssfc',17))    
-
-    # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_wssfc',49))  
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_wssfc',37))  
 
     # GPM Overpasses
     prs = full_summary(prs, 'GPM Overpasses')
@@ -469,7 +442,16 @@ def bumper_slide(prs, title, date):
     # Change the title
     slide.shapes.title.text = title
     # Subtitle is date
-    slide.placeholders[1].text = "{:%d %b %Y}".format(date)
+    if 'Current Weather' in title:
+        slide.placeholders[1].text = ''
+    elif 'Day 0' not in title:
+        end = date + timedelta(hours=24)
+        slide.placeholders[1].text = "{:%HZ %d %b %Y} through {:%HZ %d %b %Y}".format(date, end)
+
+    else:
+        end = date + timedelta(hours=12)
+        slide.placeholders[1].text = "Now through {:%HZ %d %b %Y}".format(end)
+
     return prs
 
 
