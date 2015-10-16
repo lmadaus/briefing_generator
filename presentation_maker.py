@@ -4,10 +4,11 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 #from pptx.enum.dml import MSO_THEME_COLOR
 from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.dml import MSO_THEME_COLOR
 from datetime import time as dtime
 from datetime import datetime, timedelta
-import os
-import re
+import os, re
 import urllib
 
 # The next three lines automatically
@@ -184,7 +185,7 @@ def build_presentation(present_date):
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_wssfc',1))
  
     # GPM Overpasses
-    prs = full_summary(prs, 'GPM Overpasses')
+    prs = full_summary(prs, 'Day 0 GPM Overpasses')
 
     # Summary
     prs = objectives_slide(prs, 'Day 0 Summary')    
@@ -214,8 +215,11 @@ def build_presentation(present_date):
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc',13))  
 
     # GPM Overpasses
-    prs = full_summary(prs, 'GPM Overpasses')
-   
+    prs = full_summary(prs, 'Day 1 GPM Overpasses')
+    
+    # Timing summary
+    prs = precip_timing_table(prs, 'Day 1 Precip Timing') 
+  
     # Possible objectives
     prs = objectives_slide(prs, 'Day 1 Summary')
 
@@ -245,7 +249,10 @@ def build_presentation(present_date):
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_wssfc',37))  
 
     # GPM Overpasses
-    prs = full_summary(prs, 'GPM Overpasses')
+    prs = full_summary(prs, 'Day 2 GPM Overpasses')
+    
+    # Timing summary
+    prs = precip_timing_table(prs, 'Day 2 Precip Timing')
    
     # Summary
     prs = objectives_slide(prs, 'Day 2 Summary')
@@ -301,7 +308,7 @@ def get_latest_image(product, present_date, within_hours=12):
     # If this is a path, replace the starttime with the desired time
     # Given as present date (this MUST be a model start time)
     path = path.replace('YYYYMMDDHH',present_date.strftime('%Y%m%d%H'))    
-    
+    not_found = False
     # This is a web address
     if product in ['GFS 500mb Day 3', 'NAEFS 500mb and Spread Day 3','NAEFS 500mb and Spread Day 4',\
                 'NAEFS 500mb and Spread Day 5']:
@@ -324,6 +331,9 @@ def get_latest_image(product, present_date, within_hours=12):
             urllib.request.urlretrieve(path, recent_file)
         except AttributeError:
             urllib.urlretrieve(path, recent_file)
+        except:
+            not_found = True            
+            
             
         fdate = None
     
@@ -338,6 +348,8 @@ def get_latest_image(product, present_date, within_hours=12):
             urllib.request.urlretrieve(path, recent_file)
         except AttributeError:
             urllib.urlretrieve(path, recent_file)
+        except:
+            not_found = True
     else:
         if 'WRF' in product:
             fhour = int(path.split('.')[-2][1:])
@@ -355,6 +367,8 @@ def get_latest_image(product, present_date, within_hours=12):
             urllib.request.urlretrieve(path, ext)
         except AttributeError:
             urllib.urlretrieve(path, ext)
+        except:
+            not_found = True
         #except:
         #   print("FILE NOT FOUND:")
         #   print(path)
@@ -378,14 +392,100 @@ def get_latest_image(product, present_date, within_hours=12):
         print("Found {:s} image valid at {:%H%MZ %d %b %Y}".format(product, fdate))
     else:
     """
-    print("Found {:s} image".format(product))
-    # Return the path
-    if path == '':
-        return (recent_file, fdate)
+    if not_found:
+        print("WARNING: Did not find {:s} image".format(product))
+        return (None, None)
     else:
-        return ('/'.join((path,recent_file)), fdate)
+        print("Found {:s} image".format(product))
+        # Return the path
+        if path == '':
+            return (recent_file, fdate)
+        else:
+            return ('/'.join((path,recent_file)), fdate)
 
+def add_timeline(slide, curday):
+    # Add the timeline to the top of the slide
+    shapes = slide.shapes
+    # Set colors to use
+    daycolor = {0: RGBColor(178, 34, 34),
+                1: RGBColor(218, 165, 32),
+                2: RGBColor(46, 139, 87),
+                3: RGBColor(65, 105, 225)}    
+    
+    # First, current weather (Day 0)
+    left = Inches(0)
+    top=Inches(0)
+    height = Inches(0.25)
+    width = Inches(2.3)
+    shape = shapes.add_shape(MSO_SHAPE.PENTAGON,\
+        left, top, width, height)
+    shape.text = 'Day 0'
+    if curday not in [1,2,3,4,5]:
+        curday = 0
+    elif curday >= 3:
+        curday = 3
+    
+    # Now figure out the shading
+    shape.fill.solid()
+    if curday == 0:
+        shape.fill.fore_color.rgb = daycolor[0]
+    else:
+        shape.fill.fore_color.rgb = RGBColor(200,200,200)
+    
+    left += width - Inches(0.05)
+    width = Inches(2.6)
+    # Now for rest of days
+    for day in range(1,4):
 
+        shape = shapes.add_shape(MSO_SHAPE.CHEVRON,\
+            left, top, width, height)
+        if day == 3:
+            shape.text = 'Day {:d}+'.format(day)    
+        else:
+            shape.text = 'Day {:d}'.format(day)  
+        left += width - Inches(0.05)
+        shape.fill.solid()
+        if curday == day:
+            shape.fill.fore_color.rgb = daycolor[curday]
+        else:
+            shape.fill.fore_color.rgb = RGBColor(200,200,200)  
+    
+    
+    return slide
+
+def precip_timing_table(prs, titletxt):
+    """
+    Make an empty slide and insert the "timing" chart for front location
+    """
+    slide_layout = prs.slide_layouts[layout['Title Alone']]
+    # Add the slide to the presentation
+    slide = prs.slides.add_slide(slide_layout)
+    title = slide.shapes.title
+    title.text = titletxt 
+    
+    rows = 4
+    cols = 4
+    width = Inches(9)
+    height = Inches(4)
+    top = Inches(2)
+    left = Inches(0.5)
+    table = slide.shapes.add_table(rows, cols, left, top, width, height).table
+    table.first_col = True
+    table.first_row = True
+    # Write text
+    table.cell(0,1).text = '<200km Offshore'  
+    table.cell(0,2).text = 'At NPOL/Coast'
+    table.cell(0,3).text = 'Olympics'
+    table.cell(1,0).text = 'Pre-frontal'
+    table.cell(2,0).text = 'Frontal Zone'
+    table.cell(3,0).text = 'Post-frontal'
+ 
+    # Add timeline
+    # First, figure out daynum
+    daynum = int(re.search('(\d)', titletxt).groups()[0])
+    slide = add_timeline(slide,daynum)    
+   
+    return prs
 
 
 def full_slide_image(prs,product,present_date, ftime=None, width=None, link=False):
@@ -420,8 +520,15 @@ def full_slide_image(prs,product,present_date, ftime=None, width=None, link=Fals
         d.text = '\n\n' + ftime.strftime('%d %b %HZ')
         d.font.size=Pt(28)
 
-    if results is None:
-        # Didn't find the image.  Create slide anyway.
+    if results[0] is None:
+         # Didn't find the image.  Create slide anyway.
+         # Add timeline
+        dayposs = re.search('Day (\d)', product)
+        if dayposs is None:
+            curday = 0
+        else:
+            curday = int(dayposs.groups()[0])
+        add_timeline(slide, curday)
         return prs
     imgpath, imgdate = results   
     # Add the image
@@ -429,7 +536,15 @@ def full_slide_image(prs,product,present_date, ftime=None, width=None, link=Fals
         left_balanced = (10-width)/2.
         pic = slide.shapes.add_picture(imgpath, left=Inches(left_balanced), top=Inches(0.1), width=Inches(width))
     else:
-        pic = slide.shapes.add_picture(imgpath, left=Inches(0), top=Inches(0.0), width=Inches(7))
+        pic = slide.shapes.add_picture(imgpath, left=Inches(0), top=Inches(0.25), width=Inches(7))
+        
+    # Add timeline
+    dayposs = re.search('Day (\d)', product)
+    if dayposs is None:
+        curday = 0
+    else:
+        curday = int(dayposs.groups()[0])
+    add_timeline(slide, curday)
     return prs
 
 
@@ -451,6 +566,15 @@ def bumper_slide(prs, title, date):
     else:
         end = date + timedelta(hours=12)
         slide.placeholders[1].text = "Now through {:%HZ %d %b %Y}".format(end)
+    
+    # Add timeline
+    dayposs = re.search('Day (\d)', title)
+    if dayposs is None:
+        curday = 0
+    else:
+        curday = int(dayposs.groups()[0])
+    add_timeline(slide, curday)
+
 
     return prs
 
@@ -462,6 +586,13 @@ def objectives_slide(prs, title):
     # Add the slide to the presentation
     slide = prs.slides.add_slide(slide_layout)
     slide.shapes.title.text = title 
+        # Add timeline
+    dayposs = re.search('Day (\d)', title)
+    if dayposs is None:
+        curday = 0
+    else:
+        curday = int(dayposs.groups()[0])
+    add_timeline(slide, curday)
     
     return prs
 
@@ -469,6 +600,16 @@ def full_summary(prs, title):
     slide_layout = prs.slide_layouts[layout['Bullet Slide']]
     slide = prs.slides.add_slide(slide_layout)
     slide.shapes.title.text = title
+    # Add timeline
+    dayposs = re.search('Day (\d)', title)
+    if dayposs is None:
+        curday = 0
+    else:
+        curday = int(dayposs.groups()[0])
+        
+    if title != 'Discussion Summary':
+        add_timeline(slide, curday)
+    
     return prs
 
 def airport_slide(prs, title):
@@ -493,7 +634,14 @@ def airport_slide(prs, title):
         run.text = '\tVisibility:'
     tf.margin_bottom=Inches(0.1)
     tf.word_wrap = False
-
+    
+    # Add timeline
+    dayposs = re.search('Day (\d)', title)
+    if dayposs is None:
+        curday = 0
+    else:
+        curday = int(dayposs.groups()[0])
+    add_timeline(slide, curday)
     
     return prs    
 
