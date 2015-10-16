@@ -425,6 +425,7 @@ def add_timeline(slide, curday):
     elif curday >= 3:
         curday = 3
     
+    shape.line.color.rgb = daycolor[0]
     # Now figure out the shading
     shape.fill.solid()
     if curday == 0:
@@ -436,9 +437,10 @@ def add_timeline(slide, curday):
     width = Inches(2.6)
     # Now for rest of days
     for day in range(1,4):
-
+        
         shape = shapes.add_shape(MSO_SHAPE.CHEVRON,\
             left, top, width, height)
+        shape.line.color.rgb = daycolor[day]
         if day == 3:
             shape.text = 'Day {:d}+'.format(day)    
         else:
