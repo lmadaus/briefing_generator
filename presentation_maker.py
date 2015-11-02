@@ -131,7 +131,7 @@ def build_presentation(present_date):
     else:  
         title_slide.shapes.title.text = "Morning Weather Briefing"
     # Subtitle is a "placeholder" object
-    title_slide.placeholders[1].text = "{:%d %b %Y / %H00Z}\nForecaster Name".format(present_date)
+    title_slide.placeholders[1].text = "{:%d %b %Y / %H00Z}\nForecaster Name".format(present_date+timedelta(hours=6))
 
     
     # Make Prev weather bumper
@@ -161,7 +161,7 @@ def build_presentation(present_date):
     
     # Current airport conditions--> vis, wind dir, wind speed (and at NPOL)
     #prs = full_summary(prs, 'Current Airport Conditions')
-    prs = airport_slide(prs, 'Current Airport Conditions')
+    prs = wxdata_slide(prs, 'Current Airport Conditions', type='METAR', locs=['KPAE','KTCM','KHQM'])
     
     # Bumper into next 24 hour forecast
     prs = bumper_slide(prs, 'Forecast: Day 0', present_date)
@@ -186,6 +186,9 @@ def build_presentation(present_date):
  
     # GPM Overpasses
     prs = full_summary(prs, 'Day 0 GPM Overpasses')
+    
+    # Latest TAFs 
+    prs = wxdata_slide(prs, 'Latest (Day 0) TAFs', 'TAF', ['KPAE','KTCM','KHQM'])
 
     # Summary
     prs = objectives_slide(prs, 'Day 0 Summary')    
@@ -214,6 +217,7 @@ def build_presentation(present_date):
     # WRF 10m Winds
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc',13))  
 
+    
     # GPM Overpasses
     prs = full_summary(prs, 'Day 1 GPM Overpasses')
     
@@ -278,7 +282,7 @@ def build_presentation(present_date):
     prs = full_summary(prs, 'Discussion Summary')
     
     # Save the presentation
-    prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(present_date))
+    prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(present_date+timedelta(hours=6)))
 
 def get_latest_image(product, present_date, within_hours=12):
     """
@@ -584,7 +588,7 @@ def bumper_slide(prs, title, date):
 
 def objectives_slide(prs, title):
     # Choose a blank
-    slide_layout = prs.slide_layouts[layout['Side By Side']]
+    slide_layout = prs.slide_layouts[layout['Bullet Slide']]
     # Add the slide to the presentation
     slide = prs.slides.add_slide(slide_layout)
     slide.shapes.title.text = title 
@@ -614,29 +618,80 @@ def full_summary(prs, title):
     
     return prs
 
-def airport_slide(prs, title):
+
+
+def get_TAFs(sites):
+    main_addr = 'https://www.aviationweather.gov/adds/metars/?station_ids={:s}&std_trans=standard&hoursStr=most+recent+only&chk_tafs=on&submitmet=Submit'
+    tafs = []
+    for s in sites:
+        print("Getting TAF for:", s)
+        try:
+            import urllib.request
+            with urllib.request.urlopen(main_addr.format(s)) as response:
+                html = response.read()
+        except:
+            import urllib2
+            response = urllib2.urlopen(main_addr.format(s))
+            html = response.read()
+        html = str(html)
+        part1 = html.split(s.upper())[1]
+        part2 = part1.split('</font>')[0]
+        datasearch = ' '.join((s.upper(),part2))
+        tafs.append(datasearch)
+    return tafs
+
+def get_METARs(sites):
+    main_addr = 'https://www.aviationweather.gov/adds/metars/?station_ids={:s}&std_trans=standard&chk_metars=on&hoursStr=most+recent+only&submitmet=Submit'
+    metars = []
+    for s in sites:
+        print("Getting METAR for:", s)
+        try:
+            import urllib.request
+            with urllib.request.urlopen(main_addr.format(s)) as response:
+                html = response.read()
+        except:
+            import urllib2
+            response = urllib2.urlopen(main_addr.format(s))
+            html = response.read()
+        html = str(html)
+        part1 = html.split(s.upper())[1]
+        part2 = part1.split('</FONT>')[0]
+        datasearch = ' '.join((s.upper(),part2))
+        metars.append(datasearch)
+    return metars
+
+
+
+
+
+def wxdata_slide(prs, title, type='TAF', locs=[]):
     slide_layout = prs.slide_layouts[layout['Bullet Slide']]
+    # Add the slide to the presentation
     slide = prs.slides.add_slide(slide_layout)
-    slide.shapes.title.text = title
+    slide.shapes.title.text = title 
+    # Try to download the requested data
+    # If it fails, just return the slide
+    # with the title
+    try:
+        if type == 'TAF':
+            data = get_TAFs(locs)
+            fs = 14
+        elif type == 'METAR':
+            data = get_METARs(locs)
+            fs = 18
+    except:
+        return prs
+    # Add to the slide
     # Get main text box
     mainbox = slide.placeholders[1]
     tf = mainbox.text_frame
     tf.clear()
     # New paragraph for each station
-    stations = ['Paine Field [KPAE]','McChord Field [KTCM]','Hoquiam [KHQM]']
-    for s in stations:
+    for s in data:
         p = tf.add_paragraph()
-        run = p.add_run()
-        run.text = s + '\n'
-        run = p.add_run()
-        run.text = '\tWind:\n'
-        run = p.add_run()
-        run.text = '\tCeiling:\n'
-        run = p.add_run()
-        run.text = '\tVisibility:'
-    tf.margin_bottom=Inches(0.1)
-    tf.word_wrap = False
-    
+        p.text = s
+        font = p.font
+        font.size=Pt(fs)
     # Add timeline
     dayposs = re.search('Day (\d)', title)
     if dayposs is None:
@@ -644,11 +699,12 @@ def airport_slide(prs, title):
     else:
         curday = int(dayposs.groups()[0])
     add_timeline(slide, curday)
-    
-    return prs    
+
+    return prs
 
 
 if __name__ == '__main__':
+    #get_TAFs(['KPAE','KTCM'])
     build_presentation(present_date)
 
 
