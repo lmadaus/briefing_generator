@@ -105,13 +105,16 @@ def build_presentation(present_date):
     # Switch to the presentation directory
     basedir = os.getcwd()
     os.chdir(presentation_path)
-    
+   
+    # The actual presentation time will be 6 hours later
+    actual_present_date = present_date + timedelta(hours=6)
+
     # Make a new subdirectory for this presentation
-    if os.path.exists('./{:%Y%m%d%H}'.format(present_date)):
-        os.system('rm ./{:%Y%m%d%H}/*'.format(present_date))
+    if os.path.exists('./{:%Y%m%d%H}'.format(actual_present_date)):
+        os.system('rm ./{:%Y%m%d%H}/*'.format(actual_present_date))
     else:     
-        os.mkdir('./{:%Y%m%d%H}'.format(present_date))
-    os.chdir('./{:%Y%m%d%H}'.format(present_date))
+        os.mkdir('./{:%Y%m%d%H}'.format(actual_present_date))
+    os.chdir('./{:%Y%m%d%H}'.format(actual_present_date))
 
     # Make a new presentation
     #try:
@@ -131,7 +134,7 @@ def build_presentation(present_date):
     else:  
         title_slide.shapes.title.text = "Morning Weather Briefing"
     # Subtitle is a "placeholder" object
-    title_slide.placeholders[1].text = "{:%d %b %Y / %H00Z}\nForecaster Name".format(present_date+timedelta(hours=6))
+    title_slide.placeholders[1].text = "{:%d %b %Y / %H00Z}\nForecaster Name".format(actual_present_date)
 
     
     # Make Prev weather bumper
@@ -282,7 +285,7 @@ def build_presentation(present_date):
     prs = full_summary(prs, 'Discussion Summary')
     
     # Save the presentation
-    prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(present_date+timedelta(hours=6)))
+    prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(actual_present_date))
 
 def get_latest_image(product, present_date, within_hours=12):
     """
