@@ -280,10 +280,26 @@ def build_presentation(present_date):
     # Summary
     prs = objectives_slide(prs, 'Day 3+ Summary')
 
-    
     # Conclusion slide
     prs = full_summary(prs, 'Discussion Summary')
     
+
+    # Insert map slide
+    slide_layout = prs.slide_layouts[layout['Blank Slide']]
+    slide = prs.slides.add_slide(slide_layout)
+    width=9
+    left_balanced = (10-width)/2.
+    mappath = 'http://www.atmos.washington.edu/~lmadaus/olympex/lynn_ops_domain.png'
+    print("Getting ops map")
+    try:    
+        urllib.request.urlretrieve(mappath, 'lynn_ops_domain.png')
+    except AttributeError:
+        urllib.urlretrieve(mappath, 'lynn_ops_domain.png')
+    except:
+        not_found = True
+    pic = slide.shapes.add_picture('lynn_ops_domain.png', left=Inches(left_balanced), top=Inches(0.1), width=Inches(width))
+    
+
     # Save the presentation
     prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(actual_present_date))
 
