@@ -19,7 +19,7 @@ nowdate = now.date()
 present_date = datetime.combine(nowdate,dtime(12,0))
 # Uncomment the following line to manually specify the
 # key date of the presentation
-#present_date=datetime(2015,9,10,12)
+#present_date=datetime(2015,11,5,12)
 
 
 # Set the directory where the output files will be put
@@ -69,9 +69,22 @@ img_paths = {
              'WRF 3hr Prcp (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f012.png', 'wrf_precip03_small_day0.png'),
              'WRF 3hr Prcp Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f024.png', 'wrf_precip03_large_day1.png'),
              'WRF 3hr Prcp (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f024.png', 'wrf_precip03_small_day1.png'),
+             'WRF 3hr Prcp (4km) Day 1a' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f018.png', 'wrf_precip03_small_day1a.png'),
+             'WRF 3hr Prcp (4km) Day 1b' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f024.png', 'wrf_precip03_small_day1b.png'),
+             'WRF 3hr Prcp (4km) Day 1c' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f030.png', 'wrf_precip03_small_day1c.png'),
+             'WRF 3hr Prcp (4km) Day 1d' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f036.png', 'wrf_precip03_small_day1d.png'),
+
              'WRF 3hr Prcp Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f048.png', 'wrf_precip03_large_day2.png'),
              'WRF 3hr Prcp (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f048.png', 'wrf_precip03_small_day2.png'),
+             'WRF 3hr Prcp (4km) Day 2a' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f042.png', 'wrf_precip03_small_day2a.png'),
+             'WRF 3hr Prcp (4km) Day 2b' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f048.png', 'wrf_precip03_small_day2b.png'),
+             'WRF 3hr Prcp (4km) Day 2c' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f054.png', 'wrf_precip03_small_day2c.png'),
+             'WRF 3hr Prcp (4km) Day 2d' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f060.png', 'wrf_precip03_small_day2d.png'),
 
+             'WRF 3hr Prcp (4km) Day 3a' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f066.png', 'wrf_precip03_small_day3a.png'),
+             'WRF 3hr Prcp (4km) Day 3b' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f072.png', 'wrf_precip03_small_day3b.png'),
+             'WRF 3hr Prcp (4km) Day 3c' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f078.png', 'wrf_precip03_small_day3c.png'),
+             'WRF 3hr Prcp (4km) Day 3d' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f084.png', 'wrf_precip03_small_day3d.png'),
 
              'WRF 10m Wind Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f006.png', 'wrf_wssfc_large_day0.png'),
              'WRF 10m Wind (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f006.png', 'wrf_wssfc_small_day0.png'),
@@ -214,9 +227,13 @@ def build_presentation(present_date):
     prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip12hr',13)) 
 
   
+  
     # WRF 3hr zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip3hr',13)) 
+    #prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip3hr',13)) 
     
+
+    # WRF 4-panel precip
+    prs = four_panel_image(prs, 1, present_date, link=model_path.format(present_date,'opxSM_precip3hr',13))
     # WRF 10m Winds
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc',13))  
 
@@ -250,8 +267,11 @@ def build_presentation(present_date):
     prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip12hr',37)) 
     
     # WRF 3hr zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip3hr',37))     
+    #prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip3hr',37))     
     
+    # WRF 4-panel precip
+    prs = four_panel_image(prs, 2, present_date, link=model_path.format(present_date,'opxSM_precip3hr',37)) 
+   
     # WRF 10m Winds
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_wssfc',37))  
 
@@ -273,6 +293,9 @@ def build_presentation(present_date):
     
     # WRF Image --> 500mb Vort
     #prs = full_slide_image(prs, 'WRF 500mb Day 3', day2_ftime)
+    # WRF 4-panel precip
+    prs = four_panel_image(prs, 3, present_date, link=model_path.format(present_date,'opxSM_precip3hr',61))    
+    
     # NAEFS uncertainty   
     prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 3', present_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
     prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 4', present_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
@@ -512,6 +535,44 @@ def precip_timing_table(prs, titletxt):
    
     return prs
 
+def four_panel_image(prs, daynum, present_date, link=None):
+    # Download all four images
+    images = []
+    for panel in ['a','b','c','d']:
+        results = get_latest_image('WRF 3hr Prcp (4km) Day {:d}{:s}'.format(daynum,panel), present_date)
+        if results[0] == None:
+            images.append([])
+        else:
+            images.append(results)
+    
+    # Get a blank slide
+    slide_layout = prs.slide_layouts[layout['Title Alone']]
+    slide = prs.slides.add_slide(slide_layout)
+    title = slide.shapes.title
+
+    # Now the panels
+    lefts = [0,5,0,5]
+    tops = [0.15, 0.15, 4, 4]
+    text_lefts = [4.2,9.2,4.2,9.2]
+    text_tops = [3.0,3.0,6.8,6.8]
+    times = ['6Z','12Z','18Z','00Z']
+    for pnum, p in enumerate(images):
+        if p == []:
+            continue
+        pic = slide.shapes.add_picture(p[0], left=Inches(lefts[pnum]), top=Inches(tops[pnum]), width=Inches(5))     
+        txt = slide.shapes.add_textbox(left=Inches(text_lefts[pnum]), top=Inches(text_tops[pnum]),width=Inches(0.5), height=Inches(0.5))
+        tf = txt.text_frame
+        para = tf.add_paragraph()
+        r = para.add_run()
+        r.text = times[pnum]
+        r.font.bold = True
+        r.font.size = Pt(24)
+        if link is not None:
+            hlink = r.hyperlink
+            hlink.address = link
+        
+    add_timeline(slide, daynum)
+    return prs
 
 def full_slide_image(prs,product,present_date, ftime=None, width=None, link=False):
     # Take "product" and make a full-slide image with title out of it
@@ -656,6 +717,7 @@ def get_TAFs(sites):
         part1 = html.split(s.upper())[1]
         part2 = part1.split('</font>')[0]
         datasearch = ' '.join((s.upper(),part2))
+        datasearch = datasearch.replace('\n','\n\r')
         tafs.append(datasearch)
     return tafs
 
