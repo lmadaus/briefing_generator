@@ -11,15 +11,30 @@ from datetime import datetime, timedelta
 import os, re
 import urllib
 
-# The next three lines automatically
-# set the presentation key date to be
-# 12Z today
+# Figure out the current time
 now = datetime.now()
+utcnow = datetime.utcnow()
 nowdate = now.date()
-present_date = datetime.combine(nowdate,dtime(12,0))
+utcnowdate = utcnow.date()
+# Now, based on the current time, decide which presentation we are doing
+# (18Z morning or 4Z evening) and which should be the most recent available
+# model run
+if utcnow.hour < 16 and utcnow.hour >= 4:
+    model_init_date = datetime.combine(utcnowdate, dtime(0,0))
+    present_date = datetime.combine(utcnowdate,dtime(5,0))
+elif utcnow.hour < 4:
+
+    model_init_date = datetime.combine(utcnowdate-timedelta(hours=24),dtime(12,0))
+    present_date = datetime.combine(nowdate,dtime(18,0))
+else:
+    model_init_date = datetime.combine(utcnowdate,dtime(12,0))
+    present_date = datetime.combine(nowdate,dtime(18,0))    
+
+print("Model init date:", model_init_date)
+print("Presentation date:", present_date)
 # Uncomment the following line to manually specify the
-# key date of the presentation
-#present_date=datetime(2015,11,5,12)
+# model data to grab
+#model_init_date=datetime(2015,11,5,12)
 
 
 # Set the directory where the output files will be put
@@ -46,14 +61,14 @@ img_paths = {
              'IR+500mb' : ('http://www.atmos.washington.edu/cgi-bin/latest.cgi?sat_500+-notitle','500mb.gif',),
              'Water Vapor' : ('http://www.atmos.washington.edu/cgi-bin/latest.cgi?wv_common_full+-notitle','wv.gif'),
              'OPC Surface Analys.' : ('http://www.opc.ncep.noaa.gov/P_e_sfc_color.png',None),
-             'WRF 500mb Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f006.png', 'wrf_500mb_day0.png'),
+             'WRF 500mb Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f009.png', 'wrf_500mb_day0.png'),
              'WRF 500mb Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f024.png', 'wrf_500mb_day1.png'),
              'WRF 500mb Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_500mb.YYYYMMDDHH.f048.png', 'wrf_500mb_day2.png'),
-             'WRF SLP Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f006.png', 'wrf_sfc_day0.png'),
+             'WRF SLP Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f009.png', 'wrf_sfc_day0.png'),
              'WRF SLP Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f024.png', 'wrf_sfc_day1.png'),
              'WRF SLP Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_surface.YYYYMMDDHH.f048.png', 'wrf_sfc_day2.png'),
 
-             'WRF Melt. Level Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f006.png', 'wrf_melt_level_day0.png'),
+             'WRF Melt. Level Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f009.png', 'wrf_melt_level_day0.png'),
              'WRF Melt. Level Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f024.png', 'wrf_melt_level_day1.png'),     
              'WRF Melt. Level Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_melt_level.YYYYMMDDHH.f048.png', 'wrf_melt_level_day2.png'),     
 
@@ -65,8 +80,8 @@ img_paths = {
              'WRF 12hr Prcp (4km) Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip12hr.YYYYMMDDHH.f048.png', 'wrf_precip_small_day2.png'),
 
 
-             'WRF 3hr Prcp Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f012.png', 'wrf_precip03_large_day0.png'),
-             'WRF 3hr Prcp (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f012.png', 'wrf_precip03_small_day0.png'),
+             'WRF 3hr Prcp Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f009.png', 'wrf_precip03_large_day0.png'),
+             'WRF 3hr Prcp (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f009.png', 'wrf_precip03_small_day0.png'),
              'WRF 3hr Prcp Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_precip3hr.YYYYMMDDHH.f024.png', 'wrf_precip03_large_day1.png'),
              'WRF 3hr Prcp (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f024.png', 'wrf_precip03_small_day1.png'),
              'WRF 3hr Prcp (4km) Day 1a' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f018.png', 'wrf_precip03_small_day1a.png'),
@@ -86,8 +101,8 @@ img_paths = {
              'WRF 3hr Prcp (4km) Day 3c' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f078.png', 'wrf_precip03_small_day3c.png'),
              'WRF 3hr Prcp (4km) Day 3d' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_precip3hr.YYYYMMDDHH.f084.png', 'wrf_precip03_small_day3d.png'),
 
-             'WRF 10m Wind Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f006.png', 'wrf_wssfc_large_day0.png'),
-             'WRF 10m Wind (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f006.png', 'wrf_wssfc_small_day0.png'),
+             'WRF 10m Wind Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f009.png', 'wrf_wssfc_large_day0.png'),
+             'WRF 10m Wind (4km) Day 0' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f009.png', 'wrf_wssfc_small_day0.png'),
              'WRF 10m Wind Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f024.png', 'wrf_wssfc_large_day1.png'),
              'WRF 10m Wind (4km) Day 1' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxSM_wssfc.YYYYMMDDHH.f024.png', 'wrf_wssfc_small_day1.png'),
              'WRF 10m Wind Day 2' : ('http://www.atmos.washington.edu/~lmadaus/olympex/wrf_plots/YYYYMMDDHH/opxLG_wssfc.YYYYMMDDHH.f048.png', 'wrf_wssfc_large_day2.png'),
@@ -108,26 +123,26 @@ img_paths = {
 
             }
 
-def build_presentation(present_date):
+def build_presentation(model_init_date, present_date):
     """
     Function to build the final presentation
     Inputs:
-    present_date --> The key date for the presentation (Datetime object)
-         (i.e., the initialization date for the model graphics to grab)
+    model_init_date --> the initialization date for the model graphics to grab
+    present_date --> The actual key time of the presentation
     """
     # Switch to the presentation directory
     basedir = os.getcwd()
     os.chdir(presentation_path)
    
     # The actual presentation time will be 6 hours later
-    actual_present_date = present_date + timedelta(hours=6)
+    #present_date = model_init_date + timedelta(hours=6)
 
     # Make a new subdirectory for this presentation
-    if os.path.exists('./{:%Y%m%d%H}'.format(actual_present_date)):
-        os.system('rm ./{:%Y%m%d%H}/*'.format(actual_present_date))
+    if os.path.exists('./{:%Y%m%d%H}'.format(present_date)):
+        os.system('rm ./{:%Y%m%d%H}/*'.format(present_date))
     else:     
-        os.mkdir('./{:%Y%m%d%H}'.format(actual_present_date))
-    os.chdir('./{:%Y%m%d%H}'.format(actual_present_date))
+        os.mkdir('./{:%Y%m%d%H}'.format(present_date))
+    os.chdir('./{:%Y%m%d%H}'.format(present_date))
 
     # Make a new presentation
     #try:
@@ -141,13 +156,13 @@ def build_presentation(present_date):
     # Add the slide to the presentation
     title_slide = prs.slides.add_slide(title_slide_layout)
     # Change the title
-    if present_date.hour < 12:
+    if model_init_date.hour < 12:
         title_slide.shapes.title.text = "Evening Weather Update"
 
     else:  
         title_slide.shapes.title.text = "Morning Weather Briefing"
     # Subtitle is a "placeholder" object
-    title_slide.placeholders[1].text = "{:%d %b %Y / %H00Z}\nForecaster Name".format(actual_present_date)
+    title_slide.placeholders[1].text = "{:%d %b %Y / %H00Z}\nForecaster Name".format(present_date)
 
     
     # Make Prev weather bumper
@@ -161,44 +176,53 @@ def build_presentation(present_date):
     prs = bumper_slide(prs, 'Current Weather', present_date)
     # Call the above function to add full-slide images
     # Here for IR+500
-    prs = full_slide_image(prs, 'IR+500mb', present_date, width=9, link='http://www.atmos.washington.edu/~ovens/wxloop.cgi?sat_500+/2d/')
+    prs = full_slide_image(prs, 'IR+500mb', model_init_date, width=9, link='http://www.atmos.washington.edu/~ovens/wxloop.cgi?sat_500+/2d/')
     # And for Water Vapor
-    prs = full_slide_image(prs, 'Water Vapor', present_date, width=9, link='http://www.atmos.washington.edu/~ovens/wxloop.cgi?wv_common+/48h/')
+    prs = full_slide_image(prs, 'Water Vapor', model_init_date, width=9, link='http://www.atmos.washington.edu/~ovens/wxloop.cgi?wv_common+/48h/')
     # Here for the web-based OPC surface analysis
-    prs = full_slide_image(prs, 'OPC Surface Analys.', present_date, link=False)
+    prs = full_slide_image(prs, 'OPC Surface Analys.', model_init_date, link=False)
 
     # Model verification?    
 
     
     # Regional Radar
-    prs = full_slide_image(prs, 'NWS PacNW Radar', present_date, link='http://www.atmos.washington.edu/~lmadaus/olympex/index.php?product=radar')
+    prs = full_slide_image(prs, 'NWS PacNW Radar', model_init_date, link='http://www.atmos.washington.edu/~lmadaus/olympex/index.php?product=radar')
     # Current Sounding
-    prs = full_slide_image(prs, 'KUIL Latest Sound.', present_date)
+    prs = full_slide_image(prs, 'KUIL Latest Sound.', model_init_date)
     
     # Current airport conditions--> vis, wind dir, wind speed (and at NPOL)
     #prs = full_summary(prs, 'Current Airport Conditions')
     prs = wxdata_slide(prs, 'Current Airport Conditions', type='METAR', locs=['KPAE','KTCM','KHQM'])
     
     # Bumper into next 24 hour forecast
-    prs = bumper_slide(prs, 'Forecast: Day 0', present_date)
-    day0_ftime = present_date + timedelta(hours=6)
+    prs = bumper_slide(prs, 'Forecast: Day 0', model_init_date)
+    # Sort out the days now
+    
+    day0_start = datetime.combine(present_date,dtime(0,0))
+    day1_start = day0_start + timedelta(hours=24)
+    day2_start = day0_start + timedelta(hours=48)
+    day3_start = day0_start + timedelta(hours=72)
+    day0_ftime = day0_start + timedelta(hours=21)
+    day1_ftime = day1_start + timedelta(hours=12)
+    day2_ftime = day2_start + timedelta(hours=12)
+    day3_ftime = day3_start + timedelta(hours=12)
     #day1_ftime = day1_ftime.replace(hour=0, minute=0, second=0)
     
    
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_500mb',1))
+    prs = full_slide_image(prs, 'WRF 500mb Day 0', model_init_date, day0_ftime, link=model_path.format(model_init_date,'opxLG_500mb',1))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxLG_surface',1))
+    prs = full_slide_image(prs, 'WRF SLP Day 0', model_init_date, day0_ftime, link=model_path.format(model_init_date,'opxLG_surface',1))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_melt_level',1))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 0', model_init_date, day0_ftime, link=model_path.format(model_init_date,'opxSM_melt_level',1))
        
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 0', present_date, day0_ftime+timedelta(hours=6), link=model_path.format(present_date,'opxSM_precip3hr',1)) 
+    prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 0', model_init_date, day0_ftime, link=model_path.format(model_init_date,'opxSM_precip3hr',1)) 
       
     # WRF zoom 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 0', present_date, day0_ftime, link=model_path.format(present_date,'opxSM_wssfc',1))
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 0', model_init_date, day0_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',1))
  
     # GPM Overpasses
     prs = full_summary(prs, 'Day 0 GPM Overpasses')
@@ -210,32 +234,32 @@ def build_presentation(present_date):
     prs = objectives_slide(prs, 'Day 0 Summary')    
     
     # Bumper into day 1 forecast
-    prs = bumper_slide(prs, 'Forecast: Day 1', present_date + timedelta(hours=12))
-    day1_ftime = present_date + timedelta(hours=24)
+    prs = bumper_slide(prs, 'Forecast: Day 1', day1_ftime)
+    #day1_ftime = model_init_date + timedelta(hours=24)
     #day2_ftime = day2_ftime.replace(hour=0, minute=0, second=0)
       
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_500mb',5))
+    prs = full_slide_image(prs, 'WRF 500mb Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxLG_500mb',5))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxLG_surface',5))
+    prs = full_slide_image(prs, 'WRF SLP Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxLG_surface',5))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_melt_level',13))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_melt_level',13))
     
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip12hr',13)) 
+    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_precip12hr',13)) 
 
   
   
     # WRF 3hr zoom Precip
-    #prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_precip3hr',13)) 
+    #prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_precip3hr',13)) 
     
 
     # WRF 4-panel precip
-    prs = four_panel_image(prs, 1, present_date, link=model_path.format(present_date,'opxSM_precip3hr',13))
+    prs = four_panel_image(prs, 1, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',13))
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', present_date, day1_ftime, link=model_path.format(present_date,'opxSM_wssfc',13))  
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',13))  
 
     
     # GPM Overpasses
@@ -248,32 +272,32 @@ def build_presentation(present_date):
     prs = objectives_slide(prs, 'Day 1 Summary')
 
     # Bumper into day 2 forecast
-    prs = bumper_slide(prs, 'Forecast: Day 2', present_date + timedelta(hours=36))
-    day2_ftime = present_date + timedelta(hours=48)
+    prs = bumper_slide(prs, 'Forecast: Day 2', day2_ftime)
+    #day2_ftime = model_init_date + timedelta(hours=48)
 
     # WRF Image --> 500mb Vort
-    prs = full_slide_image(prs, 'WRF 500mb Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_500mb',13))
+    prs = full_slide_image(prs, 'WRF 500mb Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxLG_500mb',13))
     
     # WRF SLP
-    prs = full_slide_image(prs, 'WRF SLP Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_surface',13))
+    prs = full_slide_image(prs, 'WRF SLP Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxLG_surface',13))
     
     # WRF Melting level
-    prs = full_slide_image(prs, 'WRF Melt. Level Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_melt_level',37))
+    prs = full_slide_image(prs, 'WRF Melt. Level Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_melt_level',37))
     
     # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxLG_precip12hr',13))    
+    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxLG_precip12hr',13))    
 
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip12hr',37)) 
+    #prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_precip12hr',37)) 
     
     # WRF 3hr zoom Precip
-    #prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_precip3hr',37))     
+    #prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_precip3hr',37))     
     
     # WRF 4-panel precip
-    prs = four_panel_image(prs, 2, present_date, link=model_path.format(present_date,'opxSM_precip3hr',37)) 
+    prs = four_panel_image(prs, 2, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',37)) 
    
     # WRF 10m Winds
-    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', present_date, day2_ftime, link=model_path.format(present_date,'opxSM_wssfc',37))  
+    prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',37))  
 
     # GPM Overpasses
     prs = full_summary(prs, 'Day 2 GPM Overpasses')
@@ -289,17 +313,17 @@ def build_presentation(present_date):
 
 
     # Bumper into day 3+ forecast
-    prs = bumper_slide(prs, 'Forecast: Day 3+', present_date + timedelta(days=3))
+    prs = bumper_slide(prs, 'Forecast: Day 3+', day3_ftime)
     
     # WRF Image --> 500mb Vort
     #prs = full_slide_image(prs, 'WRF 500mb Day 3', day2_ftime)
     # WRF 4-panel precip
-    prs = four_panel_image(prs, 3, present_date, link=model_path.format(present_date,'opxSM_precip3hr',61))    
+    prs = four_panel_image(prs, 3, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',61))    
     
     # NAEFS uncertainty   
-    prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 3', present_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
-    prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 4', present_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
-    prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 5', present_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
+    prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 3', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
+    prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 4', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
+    prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 5', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
     # Summary
     prs = objectives_slide(prs, 'Day 3+ Summary')
 
@@ -324,12 +348,12 @@ def build_presentation(present_date):
     
 
     # Save the presentation
-    prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(actual_present_date))
+    prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(present_date))
 
-def get_latest_image(product, present_date, within_hours=12):
+def get_latest_image(product, model_init_date, valid_time=None, within_hours=12):
     """
     Function to get the latest image from a given product,
-    but only if it is within within_hours of present_date
+    but only if it is within within_hours of model_init_date
     
     Returns a tuple with:
     
@@ -351,10 +375,12 @@ def get_latest_image(product, present_date, within_hours=12):
         return None
     # Parse out the info
     path, ext = img_paths[product]
+    origpath = path
     # If this is a path, replace the starttime with the desired time
     # Given as present date (this MUST be a model start time)
-    path = path.replace('YYYYMMDDHH',present_date.strftime('%Y%m%d%H'))    
+    path = path.replace('YYYYMMDDHH',model_init_date.strftime('%Y%m%d%H'))    
     not_found = False
+    last_run = False
     # This is a web address
     if product in ['GFS 500mb Day 3', 'NAEFS 500mb and Spread Day 3','NAEFS 500mb and Spread Day 4',\
                 'NAEFS 500mb and Spread Day 5']:
@@ -366,10 +392,10 @@ def get_latest_image(product, present_date, within_hours=12):
         
         if product.startswith('GFS'):
             fhour = gfs_hours[int(product[-1])]
-            fdate = present_date.replace(hour=12)
+            fdate = model_init_date.replace(hour=12)
         elif product.startswith('NAEFS'):
             fhour = naefs_hours[int(product[-1])]
-            fdate = present_date.replace(hour=0)
+            fdate = model_init_date.replace(hour=0)
             
         path = path + '/{:%Y%m%d%H}_{:03d}.gif'.format(fdate,fhour)
         #print(path)
@@ -399,7 +425,7 @@ def get_latest_image(product, present_date, within_hours=12):
     else:
         if 'WRF' in product:
             fhour = int(path.split('.')[-2][1:])
-            fdate = present_date + timedelta(hours=fhour)
+            fdate = model_init_date + timedelta(hours=fhour)
             pathsplit = path.split('.')
             pathsplit[-3] = fdate.strftime('%Y%m%d%H')
             path = '.'.join(pathsplit)
@@ -419,8 +445,33 @@ def get_latest_image(product, present_date, within_hours=12):
         #   print("FILE NOT FOUND:")
         #   print(path)
         #   exit(1)
-            
-        recent_file = ext
+    # Second try here for wrf
+    if not_found and "WRF" in product:
+        print("IN HERE!")
+        # Reset the paths to the previous model time
+        path=origpath
+        model_init_date -= timedelta(hours=12)
+        path = origpath.replace('YYYYMMDDHH',model_init_date.strftime('%Y%m%d%H'))
+        # Subtract 12 hours and see if we can grab that
+        fhour = int(path.split('.')[-2][1:])+12
+        fdate = model_init_date + timedelta(hours=fhour)
+        pathsplit = path.split('.')
+        pathsplit[-3] = fdate.strftime('%Y%m%d%H')
+        pathsplit[-2] = 'f{:03d}'.format(fhour)
+        path = '.'.join(pathsplit)
+        
+        try:
+            urllib.request.urlretrieve(path, ext)
+            not_found = False
+            last_run = True
+        except AttributeError:
+            urllib.urlretrieve(path, ext)
+            not_found = False
+            last_run = True
+        except:
+            not_found = True
+    recent_file = ext
+
             
     path = ''
 
@@ -430,7 +481,7 @@ def get_latest_image(product, present_date, within_hours=12):
     # Now check if the file is close in time to presentation date
     """
     if fdate is not None:
-        tdiff = present_date - fdate
+        tdiff = model_init_date - fdate
         nhours = tdiff.days * 24 + tdiff.seconds/3600.
         if abs(nhours) > within_hours:
             print("{:s} most recent time is {:%H%MZ %d %b %Y}, skipping".format(product, fdate))
@@ -438,11 +489,15 @@ def get_latest_image(product, present_date, within_hours=12):
         print("Found {:s} image valid at {:%H%MZ %d %b %Y}".format(product, fdate))
     else:
     """
+
     if not_found:
         print("WARNING: Did not find {:s} image".format(product))
         return (None, None)
     else:
-        print("Found {:s} image".format(product))
+        if last_run:
+            print("Found {:s} image (PREV RUN WRF)".format(product))
+        else:
+            print("Found {:s} image".format(product))
         # Return the path
         if path == '':
             return (recent_file, fdate)
@@ -535,11 +590,11 @@ def precip_timing_table(prs, titletxt):
    
     return prs
 
-def four_panel_image(prs, daynum, present_date, link=None):
+def four_panel_image(prs, daynum, model_init_date, link=None):
     # Download all four images
     images = []
     for panel in ['a','b','c','d']:
-        results = get_latest_image('WRF 3hr Prcp (4km) Day {:d}{:s}'.format(daynum,panel), present_date)
+        results = get_latest_image('WRF 3hr Prcp (4km) Day {:d}{:s}'.format(daynum,panel), model_init_date)
         if results[0] == None:
             images.append([])
         else:
@@ -574,10 +629,10 @@ def four_panel_image(prs, daynum, present_date, link=None):
     add_timeline(slide, daynum)
     return prs
 
-def full_slide_image(prs,product,present_date, ftime=None, width=None, link=False):
+def full_slide_image(prs,product,model_init_date, ftime=None, width=None, link=False):
     # Take "product" and make a full-slide image with title out of it
     # Grab the latest image
-    results = get_latest_image(product, present_date)
+    results = get_latest_image(product, model_init_date)
     
  
     #imgpath = product
@@ -786,7 +841,7 @@ def wxdata_slide(prs, title, type='TAF', locs=[]):
 
 if __name__ == '__main__':
     #get_TAFs(['KPAE','KTCM'])
-    build_presentation(present_date)
+    build_presentation(model_init_date, present_date)
 
 
 
