@@ -263,13 +263,13 @@ def build_presentation(model_init_date, present_date):
 
     
     # GPM Overpasses
-    prs = full_summary(prs, 'Day 1 GPM Overpasses')
+    prs = full_summary(prs, 'Day 1 GPM Overpasses', valid=day1_ftime)
     
     # Timing summary
-    prs = precip_timing_table(prs, 'Day 1 Precip Timing') 
+    #prs = precip_timing_table(prs, 'Day 1 Precip Timing') 
   
     # Possible objectives
-    prs = objectives_slide(prs, 'Day 1 Summary')
+    prs = full_summary(prs, 'Day 1 Summary', valid=day1_ftime)
 
     # Bumper into day 2 forecast
     prs = bumper_slide(prs, 'Forecast: Day 2', day2_ftime)
@@ -300,13 +300,13 @@ def build_presentation(model_init_date, present_date):
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',37))  
 
     # GPM Overpasses
-    prs = full_summary(prs, 'Day 2 GPM Overpasses')
+    prs = full_summary(prs, 'Day 2 GPM Overpasses', valid=day2_ftime)
     
     # Timing summary
-    prs = precip_timing_table(prs, 'Day 2 Precip Timing')
+    #prs = precip_timing_table(prs, 'Day 2 Precip Timing')
    
     # Summary
-    prs = objectives_slide(prs, 'Day 2 Summary')
+    prs = full_summary(prs, 'Day 2 Summary', valid=day2_ftime)
 
 
 
@@ -325,11 +325,14 @@ def build_presentation(model_init_date, present_date):
     prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 4', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
     prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 5', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
     # Summary
-    prs = objectives_slide(prs, 'Day 3+ Summary')
+    prs = full_summary(prs, 'Day 3+ Summary', valid=day3_ftime)
 
     # Conclusion slide
     prs = full_summary(prs, 'Discussion Summary')
-    
+
+    # Timelines
+    prs = full_summary(prs, 'Forecast Timeline')
+    prs = full_summary(prs, 'Forecast Timeline')    
 
     # Insert map slide
     slide_layout = prs.slide_layouts[layout['Blank Slide']]
@@ -447,7 +450,7 @@ def get_latest_image(product, model_init_date, valid_time=None, within_hours=12)
         #   exit(1)
     # Second try here for wrf
     if not_found and "WRF" in product:
-        print("IN HERE!")
+        #print("IN HERE!")
         # Reset the paths to the previous model time
         path=origpath
         model_init_date -= timedelta(hours=12)
@@ -543,9 +546,9 @@ def add_timeline(slide, curday):
             left, top, width, height)
         shape.line.color.rgb = daycolor[day]
         if day == 3:
-            shape.text = 'Day {:d}+'.format(day)    
+            shape.text = 'Day {:d}+ ({:%d %b}-)'.format(day, present_date + timedelta(days=day))    
         else:
-            shape.text = 'Day {:d}'.format(day)  
+            shape.text = 'Day {:d} ({:%d %b})'.format(day, present_date + timedelta(days=day))  
         left += width - Inches(0.05)
         shape.fill.solid()
         if curday == day:
@@ -691,6 +694,8 @@ def full_slide_image(prs,product,model_init_date, ftime=None, width=None, link=F
 
 
 def bumper_slide(prs, title, date):
+    start = date - timedelta(hours=12)
+    end = start + timedelta(hours=24)
     # Choose a blank
     slide_layout = prs.slide_layouts[layout['Segue']]
     # Add the slide to the presentation
@@ -700,9 +705,14 @@ def bumper_slide(prs, title, date):
     # Subtitle is date
     if 'Current Weather' in title:
         slide.placeholders[1].text = ''
+    elif 'Past 24' in title:
+        start += timedelta(hours=12)
+        end = start + timedelta(hours=24)
+        slide.placeholders[1].text = "{:%HZ %d %b %Y} through {:%HZ %d %b %Y}".format(start, end)
+
     elif 'Day 0' not in title:
-        end = date + timedelta(hours=24)
-        slide.placeholders[1].text = "{:%HZ %d %b %Y} through {:%HZ %d %b %Y}".format(date, end)
+        #end = date + timedelta(hours=24)
+        slide.placeholders[1].text = "{:%HZ %d %b %Y} through {:%HZ %d %b %Y}".format(start, end)
 
     else:
         end = date + timedelta(hours=12)
@@ -737,9 +747,11 @@ def objectives_slide(prs, title):
     
     return prs
 
-def full_summary(prs, title):
+def full_summary(prs, title, valid=None):
     slide_layout = prs.slide_layouts[layout['Bullet Slide']]
     slide = prs.slides.add_slide(slide_layout)
+    if valid is not None:
+        title = ' '.join((title, valid.strftime('(%d %b)')))
     slide.shapes.title.text = title
     # Add timeline
     dayposs = re.search('Day (\d)', title)
@@ -748,7 +760,7 @@ def full_summary(prs, title):
     else:
         curday = int(dayposs.groups()[0])
         
-    if title != 'Discussion Summary':
+    if title not in ['Discussion Summary', 'Forecast Timeline']:
         add_timeline(slide, curday)
     
     return prs
@@ -772,7 +784,7 @@ def get_TAFs(sites):
         part1 = html.split(s.upper())[1]
         part2 = part1.split('</font>')[0]
         datasearch = ' '.join((s.upper(),part2))
-        datasearch = datasearch.replace('\n','\n\r')
+        #datasearch = datasearch.replace('\n','\n\r')
         tafs.append(datasearch)
     return tafs
 
