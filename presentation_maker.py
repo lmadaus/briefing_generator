@@ -248,7 +248,7 @@ def build_presentation(model_init_date, present_date):
     prs = full_slide_image(prs, 'WRF Melt. Level Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_melt_level',13))
     
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_precip12hr',13)) 
+    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_precip12hr',3)) 
 
   
   
@@ -257,7 +257,7 @@ def build_presentation(model_init_date, present_date):
     
 
     # WRF 4-panel precip
-    prs = four_panel_image(prs, 1, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',13))
+    prs = four_panel_image(prs, 1, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',5))
     # WRF 10m Winds
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',13))  
 
@@ -294,7 +294,7 @@ def build_presentation(model_init_date, present_date):
     #prs = full_slide_image(prs, 'WRF 3hr Prcp (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_precip3hr',37))     
     
     # WRF 4-panel precip
-    prs = four_panel_image(prs, 2, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',37)) 
+    prs = four_panel_image(prs, 2, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',13)) 
    
     # WRF 10m Winds
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',37))  
@@ -318,7 +318,7 @@ def build_presentation(model_init_date, present_date):
     # WRF Image --> 500mb Vort
     #prs = full_slide_image(prs, 'WRF 500mb Day 3', day2_ftime)
     # WRF 4-panel precip
-    prs = four_panel_image(prs, 3, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',61))    
+    prs = four_panel_image(prs, 3, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',21))    
     
     # NAEFS uncertainty   
     prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 3', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
