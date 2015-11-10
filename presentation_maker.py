@@ -121,6 +121,7 @@ img_paths = {
              'NAEFS 500mb and Spread Day 4' : ('http://collaboration.cmc.ec.gc.ca/cmc/ensemble/cartes/data/cartes/GZ500/CMC_NCEP','naefs_500mb_day4.gif'),
              'NAEFS 500mb and Spread Day 5' : ('http://collaboration.cmc.ec.gc.ca/cmc/ensemble/cartes/data/cartes/GZ500/CMC_NCEP','naefs_500mb_day5.gif'),
 
+             'SREF KUIL Precip Plume' : ('http://www.atmos.washington.edu/~lmadaus/olympex/sref_plume/sref_KUIL_precip1hr.png', 'sref_kuil_precip.png')
             }
 
 def build_presentation(model_init_date, present_date):
@@ -329,6 +330,10 @@ def build_presentation(model_init_date, present_date):
 
     # Conclusion slide
     prs = full_summary(prs, 'Discussion Summary')
+
+    # SREF Precip plume
+    # And for Water Vapor
+    prs = full_slide_image(prs, 'SREF KUIL Precip Plume', model_init_date, width=10, link='http://www.spc.noaa.gov/exper/sref/srefplumes/')
 
     # Timelines
     prs = full_summary(prs, 'Forecast Timeline')
@@ -617,7 +622,10 @@ def four_panel_image(prs, daynum, model_init_date, link=None):
     for pnum, p in enumerate(images):
         if p == []:
             continue
-        pic = slide.shapes.add_picture(p[0], left=Inches(lefts[pnum]), top=Inches(tops[pnum]), width=Inches(5))     
+        try:
+            pic = slide.shapes.add_picture(p[0], left=Inches(lefts[pnum]), top=Inches(tops[pnum]), width=Inches(5))     
+        except:
+            pass
         txt = slide.shapes.add_textbox(left=Inches(text_lefts[pnum]), top=Inches(text_tops[pnum]),width=Inches(0.5), height=Inches(0.5))
         tf = txt.text_frame
         para = tf.add_paragraph()
