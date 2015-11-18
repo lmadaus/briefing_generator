@@ -227,6 +227,9 @@ def build_presentation(model_init_date, present_date):
  
     # GPM Overpasses
     prs = full_summary(prs, 'Day 0 GPM Overpasses')
+
+    # GPM Overpasses
+    prs = full_summary(prs, 'Day 0 CloudSat Overpasses')
     
     # Latest TAFs 
     prs = wxdata_slide(prs, 'Latest (Day 0) TAFs', 'TAF', ['KPAE','KTCM','KHQM'])
@@ -266,6 +269,9 @@ def build_presentation(model_init_date, present_date):
     # GPM Overpasses
     prs = full_summary(prs, 'Day 1 GPM Overpasses', valid=day1_ftime)
     
+    # CloudSat Overpasses
+    prs = full_summary(prs, 'Day 1 CloudSat Overpasses', valid=day1_ftime)    
+    
     # Timing summary
     #prs = precip_timing_table(prs, 'Day 1 Precip Timing') 
   
@@ -302,6 +308,9 @@ def build_presentation(model_init_date, present_date):
 
     # GPM Overpasses
     prs = full_summary(prs, 'Day 2 GPM Overpasses', valid=day2_ftime)
+
+    # CloudSat Overpasses
+    prs = full_summary(prs, 'Day 2 CloudSat Overpasses', valid=day2_ftime)
     
     # Timing summary
     #prs = precip_timing_table(prs, 'Day 2 Precip Timing')
@@ -320,6 +329,12 @@ def build_presentation(model_init_date, present_date):
     #prs = full_slide_image(prs, 'WRF 500mb Day 3', day2_ftime)
     # WRF 4-panel precip
     prs = four_panel_image(prs, 3, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',21))    
+
+    # GPM Overpasses
+    prs = full_summary(prs, 'Day 3 GPM Overpasses', valid=day3_ftime)
+
+    # CloudSat Overpasses
+    prs = full_summary(prs, 'Day 3 CloudSat Overpasses', valid=day3_ftime)
     
     # NAEFS uncertainty   
     prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 3', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
