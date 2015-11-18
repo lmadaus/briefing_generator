@@ -703,10 +703,15 @@ def full_slide_image(prs,product,model_init_date, ftime=None, width=None, link=F
     # Add the image
     if width is not None:
         left_balanced = (10-width)/2.
-        pic = slide.shapes.add_picture(imgpath, left=Inches(left_balanced), top=Inches(0.1), width=Inches(width))
+        try:
+            pic = slide.shapes.add_picture(imgpath, left=Inches(left_balanced), top=Inches(0.1), width=Inches(width))
+        except IOError:
+            pic = None
     else:
-        pic = slide.shapes.add_picture(imgpath, left=Inches(0), top=Inches(0.25), width=Inches(7))
-        
+        try:
+            pic = slide.shapes.add_picture(imgpath, left=Inches(0), top=Inches(0.25), width=Inches(7))
+        except IOError:
+            pic = None
     # Add timeline
     dayposs = re.search('Day (\d)', product)
     if dayposs is None:
