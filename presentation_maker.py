@@ -658,8 +658,10 @@ def four_panel_image(prs, daynum, model_init_date, link=None):
 def full_slide_image(prs,product,model_init_date, ftime=None, width=None, link=False):
     # Take "product" and make a full-slide image with title out of it
     # Grab the latest image
-    results = get_latest_image(product, model_init_date)
-    
+    try:
+        results = get_latest_image(product, model_init_date)
+    except IOError:
+        results = [None]
  
     #imgpath = product
    
