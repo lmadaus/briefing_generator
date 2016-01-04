@@ -25,10 +25,10 @@ if utcnow.hour < 16 and utcnow.hour >= 4:
 elif utcnow.hour < 4:
 
     model_init_date = datetime.combine(utcnowdate-timedelta(hours=24),dtime(12,0))
-    present_date = datetime.combine(nowdate,dtime(18,0))
+    present_date = datetime.combine(nowdate,dtime(19,30))
 else:
     model_init_date = datetime.combine(utcnowdate,dtime(12,0))
-    present_date = datetime.combine(nowdate,dtime(18,0))    
+    present_date = datetime.combine(nowdate,dtime(19,30))    
 
 print("Model init date:", model_init_date)
 print("Presentation date:", present_date)
@@ -193,7 +193,7 @@ def build_presentation(model_init_date, present_date):
     
     # Current airport conditions--> vis, wind dir, wind speed (and at NPOL)
     #prs = full_summary(prs, 'Current Airport Conditions')
-    prs = wxdata_slide(prs, 'Current Airport Conditions', type='METAR', locs=['KPAE','KTCM','KHQM'])
+    #prs = wxdata_slide(prs, 'Current Airport Conditions', type='METAR', locs=['KPAE','KTCM','KHQM'])
     
     # Bumper into next 24 hour forecast
     prs = bumper_slide(prs, 'Forecast: Day 0', model_init_date)
@@ -226,13 +226,13 @@ def build_presentation(model_init_date, present_date):
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 0', model_init_date, day0_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',1))
  
     # GPM Overpasses
-    prs = full_summary(prs, 'Day 0 GPM Overpasses')
+    #prs = full_summary(prs, 'Day 0 GPM Overpasses')
 
     # GPM Overpasses
-    prs = full_summary(prs, 'Day 0 CloudSat Overpasses')
+    #prs = full_summary(prs, 'Day 0 CloudSat Overpasses')
     
     # Latest TAFs 
-    prs = wxdata_slide(prs, 'Latest (Day 0) TAFs', 'TAF', ['KPAE','KTCM','KHQM'])
+    #prs = wxdata_slide(prs, 'Latest (Day 0) TAFs', 'TAF', ['KPAE','KTCM','KHQM'])
 
     # Summary
     prs = objectives_slide(prs, 'Day 0 Summary')    
@@ -252,7 +252,7 @@ def build_presentation(model_init_date, present_date):
     prs = full_slide_image(prs, 'WRF Melt. Level Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_melt_level',13))
     
     # WRF zoom Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_precip12hr',3)) 
+    #prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 1', model_init_date, day1_ftime, link=model_path.format(model_init_date,'opxSM_precip12hr',3)) 
 
   
   
@@ -267,10 +267,10 @@ def build_presentation(model_init_date, present_date):
 
     
     # GPM Overpasses
-    prs = full_summary(prs, 'Day 1 GPM Overpasses', valid=day1_ftime)
+    #prs = full_summary(prs, 'Day 1 GPM Overpasses', valid=day1_ftime)
     
     # CloudSat Overpasses
-    prs = full_summary(prs, 'Day 1 CloudSat Overpasses', valid=day1_ftime)    
+    #prs = full_summary(prs, 'Day 1 CloudSat Overpasses', valid=day1_ftime)    
     
     # Timing summary
     #prs = precip_timing_table(prs, 'Day 1 Precip Timing') 
@@ -292,7 +292,7 @@ def build_presentation(model_init_date, present_date):
     prs = full_slide_image(prs, 'WRF Melt. Level Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_melt_level',37))
     
     # WRF Precip
-    prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxLG_precip12hr',13))    
+    #prs = full_slide_image(prs, 'WRF 12hr Prcp Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxLG_precip12hr',13))    
 
     # WRF zoom Precip
     #prs = full_slide_image(prs, 'WRF 12hr Prcp (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_precip12hr',37)) 
@@ -307,10 +307,10 @@ def build_presentation(model_init_date, present_date):
     prs = full_slide_image(prs, 'WRF 10m Wind (4km) Day 2', model_init_date, day2_ftime, link=model_path.format(model_init_date,'opxSM_wssfc',37))  
 
     # GPM Overpasses
-    prs = full_summary(prs, 'Day 2 GPM Overpasses', valid=day2_ftime)
+    #prs = full_summary(prs, 'Day 2 GPM Overpasses', valid=day2_ftime)
 
     # CloudSat Overpasses
-    prs = full_summary(prs, 'Day 2 CloudSat Overpasses', valid=day2_ftime)
+    #prs = full_summary(prs, 'Day 2 CloudSat Overpasses', valid=day2_ftime)
     
     # Timing summary
     #prs = precip_timing_table(prs, 'Day 2 Precip Timing')
@@ -331,10 +331,10 @@ def build_presentation(model_init_date, present_date):
     prs = four_panel_image(prs, 3, model_init_date, link=model_path.format(model_init_date,'opxSM_precip3hr',21))    
 
     # GPM Overpasses
-    prs = full_summary(prs, 'Day 3 GPM Overpasses', valid=day3_ftime)
+    #prs = full_summary(prs, 'Day 3 GPM Overpasses', valid=day3_ftime)
 
     # CloudSat Overpasses
-    prs = full_summary(prs, 'Day 3 CloudSat Overpasses', valid=day3_ftime)
+    #prs = full_summary(prs, 'Day 3 CloudSat Overpasses', valid=day3_ftime)
     
     # NAEFS uncertainty   
     prs = full_slide_image(prs, 'NAEFS 500mb and Spread Day 3', model_init_date, link="https://weather.gc.ca/ensemble/naefs/cartes_e.html")
@@ -345,6 +345,9 @@ def build_presentation(model_init_date, present_date):
 
     # Conclusion slide
     prs = full_summary(prs, 'Discussion Summary')
+
+    # GPM Overpasses
+    prs = full_summary(prs, 'Day 1-3 GPM Overpasses', valid=day3_ftime)
 
     # SREF Precip plume
     # And for Water Vapor
