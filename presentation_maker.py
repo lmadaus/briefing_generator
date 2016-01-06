@@ -374,7 +374,8 @@ def build_presentation(model_init_date, present_date):
     
 
     # Save the presentation
-    prs.save('wxbriefing_{:%Y%m%d%H}.pptx'.format(present_date))
+    #output_date = datetime(present_date.year, present_date.month, present_date.day, 18)
+    prs.save('wxbriefing_{:%Y%m%d%H%M}.pptx'.format(present_date))
 
 def get_latest_image(product, model_init_date, valid_time=None, within_hours=12):
     """
